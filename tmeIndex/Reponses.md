@@ -396,7 +396,59 @@ Les prédicats liés a ce requête sont :
 
 **REMARQUE :** Oracle utilise deux index pour l'évaluation de cette requête et transforme la conjonction SQL (AND) en une intersection des adresses n-uplets (ROWID). Cette intersection est calculée par l'opérateur BITMAP AND sur un encodage binaire des ensembles d'adresses (en BITMAP). 
 
-```sql
+## Exercice 2 : Sélection AVEC OU SANS index
+Dans les plans suivants, on affiche son coût (voir la colonne Cost) 
 
+### Question a)
+Etudiez plusieurs variantes de la requête sélectionnant les personnes dont l'âge est inférieur à une valeur donnée. Pour cela, testez les prédicats de la forme age < = A avec A valant 10, 30, 40, 60 et 80. 
+
+```sql
+explain plan for
+    select a.nom, a.prenom
+    from BigAnnuaire a
+    where a.age <= 10;
+@p4
 ```
+
+```sql
+explain plan for
+    select a.nom, a.prenom
+    from BigAnnuaire a
+    where a.age <= 30;
+@p4
+```
+
+```sql
+explain plan for
+    select a.nom, a.prenom
+    from BigAnnuaire a
+    where a.age <= 40;
+@p4
+```
+
+```sql
+explain plan for
+    select a.nom, a.prenom
+    from BigAnnuaire a
+    where a.age <= 60;
+@p4
+```
+
+```sql
+explain plan for
+    select a.nom, a.prenom
+    from BigAnnuaire a
+    where a.age <= 80;
+@p4
+```
+
+Compléter le tableau en indiquant la cardinalité, le coût et si l'index IndexAge est utilisé ou non. 
+
+
+| Prédicat | Rows |  Index utilisé | Cout |
+|:--------:|:----:|:--------------:|:----:|
+| **age <= 10** | | | |
+| **age <= 10** | | | |
+| **age <= 10** | | | |
+
 
