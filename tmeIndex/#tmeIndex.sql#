@@ -105,7 +105,7 @@ explain plan for
 -- =====================================
 
 -- a)
-explain plan for
+ explain plan for
     select a.nom, a.prenom
     from BigAnnuaire a
     where a.age <= 10;
@@ -134,14 +134,14 @@ explain plan for
     from BigAnnuaire a
     where a.age <= 80;
 @p4
-
+	
 
 
 -- c)
 explain plan for
     select a.nom, a.prenom
     from BigAnnuaire a
-    where a.cp BETWEEN 50000 AND COMPLETER;
+    where a.cp BETWEEN 50000 AND 9999999;
 @p4
 
 

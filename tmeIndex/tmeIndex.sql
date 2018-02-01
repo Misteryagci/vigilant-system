@@ -111,6 +111,31 @@ explain plan for
     where a.age <= 10;
 @p4
 
+explain plan for
+    select a.nom, a.prenom
+    from BigAnnuaire a
+    where a.age <= 30;
+@p4
+
+explain plan for
+    select a.nom, a.prenom
+    from BigAnnuaire a
+    where a.age <= 40;
+@p4
+
+explain plan for
+    select a.nom, a.prenom
+    from BigAnnuaire a
+    where a.age <= 60;
+@p4
+
+explain plan for
+    select a.nom, a.prenom
+    from BigAnnuaire a
+    where a.age <= 80;
+@p4
+
+
 --COMPLETER
 
 
