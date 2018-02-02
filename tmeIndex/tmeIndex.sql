@@ -7,7 +7,7 @@
 -- Compte rendu du TME 4-5 sur les plan d'exécution
 -- ================================================
 
--- NOM, Prénom 1 :
+-- NOM, Prénom 1 : YAGCI Kaan
 -- NOM, Prénom 2 :
 
 
@@ -164,16 +164,59 @@ explain plan for
    FROM BigAnnuaire a WHERE a.age < 7;
 @p4
 
+explain plan for
+   SELECT   a.nom, a.prenom
+   FROM BigAnnuaire a WHERE a.age < 7;
+@p4
+
 
 -- b)
 
+explain plan for
+   SELECT /*+  no_index( a IndexAge) */   a.nom, a.prenom
+   FROM BigAnnuaire a WHERE a.age > 19;
+@p4
 
+explain plan for
+   SELECT /*+  index( a IndexAge) */   a.nom, a.prenom
+   FROM BigAnnuaire a WHERE a.age > 19;
+@p4
+
+explain plan for
+   SELECT  a.nom, a.prenom
+   FROM BigAnnuaire a WHERE a.age > 19;
+@p4
 
 --c)
 explain plan for
     select /*+ index(a IndexAge) no_index(a IndexCp)  */  a.nom, a.prenom 
     from BigAnnuaire a where a.age = 18 and a.cp = 75000;
 @p4
+
+explain plan for
+    select /*+ no_index(a IndexAge) index(a IndexCp)  */  a.nom, a.prenom 
+    from BigAnnuaire a where a.age = 18 and a.cp = 75000;
+@p4
+
+
+explain plan for
+    select /*+ index_combine(a IndexAge IndexCp)  */  a.nom, a.prenom 
+    from BigAnnuaire a where a.age = 18 and a.cp = 75000;
+@p4
+
+
+explain plan for
+    select /*+ no_index(a IndexAge) no_index(a IndexCp)  */  a.nom, a.prenom 
+    from BigAnnuaire a where a.age = 18 and a.cp = 75000;
+@p4
+
+
+explain plan for
+    select a.nom, a.prenom 
+    from BigAnnuaire a where a.age = 18 and a.cp = 75000;
+@p4
+
+
 
 
 
