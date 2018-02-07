@@ -1123,9 +1123,9 @@ interface HashTable<T> {
     [key: string]: T;
 }
 interface Ville : {cp:number ,ville:String, population: number}; 
-const ville : Ville;/* On suppose que cette table est bien définie*/
-interface BigAnnnuaire: {nom:String,age:number,tel:String,prenom:String,cp;number,profil:String}; 
-const annuaire: Annuaire /* On suppose que cette table existe aussi*/
+const ville : Ville[];/* On suppose que cette table est bien définie*/
+interface Annnuaire: {nom:String,age:number,tel:String,prenom:String,cp;number,profil:String}; 
+const annuaire: Annuaire[] /* On suppose que cette table existe aussi*/
 
 let hashT: HashTable<{nom:String,prenom:String,ville:String}> = {}; /* On créé alors un table d'hachage qui est initiliasé à vide */
 const indexAge = annuaire.filter(a => a.age === 18); /* On crée un index depuis la table annuaire avec les éléménts de la table dont l'attribut age est égale à 18 */
@@ -1197,15 +1197,39 @@ Pseudo-code correspondant au plan :
 interface HashTable<T> {
     [key: string]: T;
 }
-interface Ville : {cp:number ,ville:String, population: number}; 
-const ville : Ville;/* On suppose que cette table est bien définie*/
-interface BigAnnnuaire: {nom:String,age:number,tel:String,prenom:String,cp;number,profil:String}; 
-const bigAnnuaire: BigAnnuaire /* On suppose que cette table existe aussi*/
-
+interface Ville : {
+                    cp:number,
+                    ville:String, 
+                    population: number
+                }; 
+const ville : Ville[];/* On suppose que cette table est bien définie*/
+interface BigAnnnuaire: {
+                            nom:String,
+                            age:number,
+                            tel:String,
+                            prenom:String,
+                            cp;number,
+                            profil:String
+                        }; 
+const bigAnnuaire: BigAnnuaire[] /* On suppose que cette table existe aussi*/
 let hashT: HashTable<{nom:String,prenom:String,ville:String}> = {}; /* On créé alors un table d'hachage qui est initiliasé à vide */
 for (var v of ville)
 {
-    /**/
+    /* On parcourt la table des villes en entière et on les ajoute à la table d'hachage par l'attribut code postal*/
+    hashT[v.cp].ville = v.ville;
+}
+const indexAge = bigAnnuaire.filter(ba => { ba.age === 18}); /* On crée ici la table de indexAge qui contient les éléments de BigAnnuaire dont l'attribiut age est égale à 18*/
+/* On parcourt la table indexAge par le numéro de ligne */
+for (var i = 0; i<indexAge.length; ++)
+{
+    hashT[indexAge[i].cp].nom = indexAge[î].nom;
+    hashT[indexAge[i].cp].prenom = indexAge[i].prenom;
+}
+
+for (var h of hashT)
+{
+    /* On parcourt la table d'hachage pour afficher les valeurs */
+    console.log('' + h.nom + ' ' + h.prenom + ' ' + h.ville);
 }
 ```
 **Réponse à la question :** Dans la **question a)** la table Annuaire est lue avant la table Ville parce que dans la requête on n'a pas de contrainte sur la table Ville, et donc il va falloir lire tous les lignes donc 1000 lignes présente dans la table Ville. Dans l'autre côté, l'index indexAge nous permet d'avoir 20 lignes à lire concernant la table annuaire. Oracle préfère de lire d'abord le table dont le nombre de lignes le plus petit pour optimiser l'exécution des requêtes. A la question **question b)** la table Ville est lue avant la table BigAnnuaire parce que l'index indeAge sur la table BigAnnuaire nous permet d'avoir 2200 lignes mais dans la table Ville il y a 1000 lignes. Donc de même manière Oracle commence par la table dont le nombre des lignes est le plus petit pour optimiser l'exécution.
@@ -1257,8 +1281,10 @@ Column Projection Information (identified by operation id):
 ```
 Pseudo-code correspondant au plan : 
 ```TypeScript
-const ville : {cp:number ,ville:String, population: number}; /* On suppose que cette table est bien définie*/
-const bigAnnnuaire a : {nom:String,age:number,tel:String,prenom:String,cp;number,profil:String}; /* On suppose que cette table existe aussi*/
+interface Ville; {cp:number ,ville:String, population: number};
+interface BigAnnuaire: {nom:String,age:number,tel:String,prenom:String,cp;number,profil:String};
+const ville : Ville[]; /* On suppose que cette table est bien définie*/
+const bigAnnnuaire a : BigAnnuaire[]; /* On suppose que cette table existe aussi*/
 
 for (var v of ville.filter(v => v.population >= 985000))
 {
@@ -1271,10 +1297,5 @@ for (var v of ville.filter(v => v.population >= 985000))
     }
 }
 ```
-
-
-
- 
-
 
 ## Exercice 5 : Requête de jointure utilisant un index

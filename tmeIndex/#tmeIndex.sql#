@@ -1,4 +1,4 @@
-
+œ 
 
 -- ===================
 -- 3I009 2017
@@ -233,13 +233,13 @@ explain plan for
 
 
 -- b) avec BigAnnuaire
- explain plan for
-select a.nom, a.prenom, v.ville
-from BigAnnuaire a, Ville v
-where a.cp = v.cp
-and a.age=18;
+explain plan for
+    select a.nom, a.prenom, v.ville
+    from BigAnnuaire a, Ville v
+    where a.cp = v.cp
+    and a.age=18;
 @p3
-
+    
 
 
 --c)
