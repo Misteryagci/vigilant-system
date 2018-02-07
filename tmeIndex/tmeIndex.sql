@@ -1,4 +1,4 @@
-
+œ 
 
 -- ===================
 -- 3I009 2017
@@ -256,8 +256,20 @@ explain plan for
 -- Exercice 5: Autres Requetes 
 -- ===========================
 
--- voir les requetes sur l'énoncé en ligne
+--a Requêtes avec group by
+EXPLAIN plan FOR
+    SELECT age, COUNT(*)
+    FROM BigAnnuaire a
+    GROUP BY age;
+@p3
 
+--b Requêtes avec group by having
+EXPLAIN plan FOR
+    SELECT age, COUNT(*)
+    FROM BigAnnuaire a
+    GROUP BY age
+    HAVING COUNT(*) > 200;
+@p3
 
 
 
