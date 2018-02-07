@@ -4,4 +4,4 @@ Ce repo contient le travail effectué lors des séances de TME du module Bases d
 
 Il contient donc les travails des séances suivantes:
 
-- [**Séance 1**](tmeIndex/Responses.md) [TME Index](http://www-bd.lip6.fr/wiki/site/enseignement/master/bdr/tmeindex)
+- [**Séance 1**](./tmeIndex/Responses.md) [TME Index](http://www-bd.lip6.fr/wiki/site/enseignement/master/bdr/tmeindex)
