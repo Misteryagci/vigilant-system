@@ -54,8 +54,8 @@ Plan hash value: 4247486214
 -------------------------------------------------
 | Id  | Operation      | Name    | Rows    |
 -------------------------------------------------
-|   0 | SELECT STATEMENT  |        |   220K|
-|   1 |  TABLE ACCESS FULL| BIGANNUAIRE |   220K|
+|   0 | SELECT STATEMENT  |        |   220K |
+|   1 |  TABLE ACCESS FULL| BIGANNUAIRE |   220K |
 -------------------------------------------------
 
 Column Projection Information (identified by operation id):
@@ -81,17 +81,18 @@ Ce requête nous permet de afficher les statistiques sur les valeurs distinct de
 
 **Résultat :**
 On obtient l'affichage suivant:
+
 ```sql
 PLAN_TABLE_OUTPUT
 ----------------------------------------------------------------------------------------------------
 Plan hash value: 3079465304
 
 --------------------------------------------------
-| Id  | Operation	   | Name	 | Rows  |
+| Id  | Operation       | Name     | Rows  |
 --------------------------------------------------
-|   0 | SELECT STATEMENT   |		 |   100 |
-|   1 |  HASH UNIQUE	   |		 |   100 |
-|   2 |   TABLE ACCESS FULL| BIGANNUAIRE |   220K|
+|   0 | SELECT STATEMENT   |         |   100 |
+|   1 |  HASH UNIQUE       |         |   100 |
+|   2 |   TABLE ACCESS FULL| BIGANNUAIRE |   220K |
 --------------------------------------------------
 
 Column Projection Information (identified by operation id):
@@ -100,6 +101,7 @@ Column Projection Information (identified by operation id):
    1 - (#keys=1) "NOM"[VARCHAR2,30]
    2 - "NOM"[VARCHAR2,30]
 ```
+
 Cet affichage nous indique que le requête SELECT a sélectionné 100 lignes parmi les 220 000 grâce à l'opération HASH UNIQUE qui vient de DISTINCT. Donc le nombre des lignes retourné par ce requête est 100, alors **le nombre des valeurs distinct de l'attribut nom est 100**.
 
 ```sql
@@ -112,16 +114,17 @@ Ce requête nous permet d'afficher les statistiques concernant les valeus distin
 
 **Résultat**
 L'exécution du requête donne l'affichage suivant :
+
 ```sql
 PLAN_TABLE_OUTPUT
 ----------------------------------------------------------------------------------------------------
 Plan hash value: 3079465304
 
 --------------------------------------------------
-| Id  | Operation	   | Name	 | Rows  |
+| Id  | Operation       | Name     | Rows  |
 --------------------------------------------------
-|   0 | SELECT STATEMENT   |		 |    90 |
-|   1 |  HASH UNIQUE	   |		 |    90 |
+|   0 | SELECT STATEMENT   |         |    90 |
+|   1 |  HASH UNIQUE       |         |    90 |
 |   2 |   TABLE ACCESS FULL| BIGANNUAIRE |   220K|
 --------------------------------------------------
 
@@ -131,6 +134,7 @@ Column Projection Information (identified by operation id):
    1 - (#keys=1) "PRENOM"[VARCHAR2,30]
    2 - "PRENOM"[VARCHAR2,30]
 ```
+
 D'après cet affichage on peut observer que le DISTINCT permet de sélectionner que 90 lignes parmis les 220 000. Donc on peut dire que **le nombre des valeurs distinct de l'attribut prenom est 90**
 
 ```sql
@@ -138,6 +142,7 @@ explain plan for
     select distinct age from BigAnnuaire;
 @p3
 ```
+
 Ce requête permet de afficher les statistiques concernant le nombre de valeurs distinct de l'attribut age de la table BigAnnuaire.
 **Résultat :** Ce requête nous retourne l'affichage suivant.
 
@@ -147,10 +152,10 @@ PLAN_TABLE_OUTPUT
 Plan hash value: 1724242494
 
 --------------------------------------------------
-| Id  | Operation	      | Name	 | Rows  |
+| Id  | Operation          | Name     | Rows  |
 --------------------------------------------------
-|   0 | SELECT STATEMENT      | 	 |   100 |
-|   1 |  HASH UNIQUE	      | 	 |   100 |
+|   0 | SELECT STATEMENT      |      |   100 |
+|   1 |  HASH UNIQUE          |      |   100 |
 |   2 |   INDEX FAST FULL SCAN| INDEXAGE |   220K|
 --------------------------------------------------
 
@@ -160,6 +165,7 @@ Column Projection Information (identified by operation id):
    1 - (#keys=1) "AGE"[NUMBER,22]
    2 - "AGE"[NUMBER,22]
 ```
+
 D'après cet affichage on peut observer que DISTINCT nous permet de sélectionner 100 lignes parmi les 220 000. Alors on peut dire que **le nombre des valeurs distinct de l'attribut age est 100.**
 
 ```sql
@@ -178,10 +184,10 @@ PLAN_TABLE_OUTPUT
 Plan hash value: 2161319487
 
 -------------------------------------------------
-| Id  | Operation	      | Name	| Rows	|
+| Id  | Operation          | Name    | Rows    |
 -------------------------------------------------
-|   0 | SELECT STATEMENT      | 	|  1000 |
-|   1 |  HASH UNIQUE	      | 	|  1000 |
+|   0 | SELECT STATEMENT      |     |  1000 |
+|   1 |  HASH UNIQUE          |     |  1000 |
 |   2 |   INDEX FAST FULL SCAN| INDEXCP |   220K|
 -------------------------------------------------
 
@@ -195,4 +201,5 @@ Column Projection Information (identified by operation id):
 D'après cet affichage on peut observer que DISTINCT nous permet de retourner 1000 lignes parmis les 220 000. Donc on peut dire que **le nombre des valeurs distinct de l'attribut est 1000.**
 
 ### REMARQUE
+
 Pour chaque requête qui sélectionne les valeurs distincts d'un attribut sql crée l'index en utilisant cet attribut en question, pour pouvoir filtrer les données distinctes. La création de l'index est fait automatiquement.

@@ -17,7 +17,7 @@ L'objectif de ce TME est de comprendre l'utilisation des index pour évaluer des
 | **Alt-x** `my/sql-oracle` ou **Atl-x** `sql-oracle` | [se connecter à Oracle.](http://www-bd.lip6.fr/wiki/site/enseignement/documentation/oracle/connexionoracle) |
 | aller sur la ligne contenant @annuaire et faire Ctrl-C Ctrl-C | définir la table Annuaire et un synonyme pour la table BigAnnuaire |
 
-Dans ce TMe on interroge les deux tables Annuaire et BigAnnuaire.
+Dans ce TME on interroge les deux tables Annuaire et BigAnnuaire.
 
 | Table         | Nombre de tuplets  | Taille (moyenne) d'un tuple |
 |:-------------:|:------------------:|:------------------:|
