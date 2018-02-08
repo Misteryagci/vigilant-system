@@ -52,9 +52,9 @@ PLAN_TABLE_OUTPUT
 Plan hash value: 4247486214
 
 -------------------------------------------------
-| Id  | Operation      | Name    | Rows    |
+| Id  | Operation         | Name        | Rows   |
 -------------------------------------------------
-|   0 | SELECT STATEMENT  |        |   220K |
+|   0 | SELECT STATEMENT  |             |   220K |
 |   1 |  TABLE ACCESS FULL| BIGANNUAIRE |   220K |
 -------------------------------------------------
 
@@ -88,10 +88,10 @@ PLAN_TABLE_OUTPUT
 Plan hash value: 3079465304
 
 --------------------------------------------------
-| Id  | Operation       | Name     | Rows  |
+| Id  | Operation          | Name    | Rows       |
 --------------------------------------------------
-|   0 | SELECT STATEMENT   |         |   100 |
-|   1 |  HASH UNIQUE       |         |   100 |
+|   0 | SELECT STATEMENT   |         |   100      |
+|   1 |  HASH UNIQUE       |         |   100      |
 |   2 |   TABLE ACCESS FULL| BIGANNUAIRE |   220K |
 --------------------------------------------------
 
@@ -121,10 +121,10 @@ PLAN_TABLE_OUTPUT
 Plan hash value: 3079465304
 
 --------------------------------------------------
-| Id  | Operation       | Name     | Rows  |
+| Id  | Operation          | Name        | Rows  |
 --------------------------------------------------
-|   0 | SELECT STATEMENT   |         |    90 |
-|   1 |  HASH UNIQUE       |         |    90 |
+|   0 | SELECT STATEMENT   |             |    90 |
+|   1 |  HASH UNIQUE       |             |    90 |
 |   2 |   TABLE ACCESS FULL| BIGANNUAIRE |   220K|
 --------------------------------------------------
 
@@ -152,10 +152,10 @@ PLAN_TABLE_OUTPUT
 Plan hash value: 1724242494
 
 --------------------------------------------------
-| Id  | Operation          | Name     | Rows  |
+| Id  | Operation             | Name     | Rows  |
 --------------------------------------------------
-|   0 | SELECT STATEMENT      |      |   100 |
-|   1 |  HASH UNIQUE          |      |   100 |
+|   0 | SELECT STATEMENT      |          |   100 |
+|   1 |  HASH UNIQUE          |          |   100 |
 |   2 |   INDEX FAST FULL SCAN| INDEXAGE |   220K|
 --------------------------------------------------
 
@@ -184,10 +184,10 @@ PLAN_TABLE_OUTPUT
 Plan hash value: 2161319487
 
 -------------------------------------------------
-| Id  | Operation          | Name    | Rows    |
+| Id  | Operation             | Name    | Rows  |
 -------------------------------------------------
-|   0 | SELECT STATEMENT      |     |  1000 |
-|   1 |  HASH UNIQUE          |     |  1000 |
+|   0 | SELECT STATEMENT      |         |  1000 |
+|   1 |  HASH UNIQUE          |         |  1000 |
 |   2 |   INDEX FAST FULL SCAN| INDEXCP |   220K|
 -------------------------------------------------
 
