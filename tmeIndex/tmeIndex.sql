@@ -268,9 +268,59 @@ EXPLAIN plan FOR
     SELECT age, COUNT(*)
     FROM BigAnnuaire a
     GROUP BY age
-    HAVING COUNT(*) > 200;
+    HAVING count(*) > 200;
 @p3
 
+--c Requête min max
+EXPLAIN plan FOR
+    SELECT MIN(cp), MAX(cp)
+    FROM BigAnnuaire a;
+@p3
+
+--d Requête avec not in
+EXPLAIN plan FOR
+    SELECT a.nom, a.prenom
+    FROM BigAnnuaire a
+    WHERE a.prenom NOT IN ( SELECT b.prenom
+                        FROM BigAnnuaire b
+			WHERE b.age<=7);
+@p3
+
+
+--d.1 Sous-requête à l'intérieur de la requête de la question d
+EXPLAIN plan FOR
+SELECT b.prenom FROM BigAnnuaire b
+WHERE b.age<=7;
+@p3
+
+--e Requête avec NOT EXISTS
+    EXPLAIN plan FOR
+    SELECT a.nom, a.prenom
+    FROM BigAnnuaire a
+    WHERE NOT EXISTS ( SELECT *
+                       FROM BigAnnuaire b
+		       WHERE b.prenom = a.prenom
+		       AND b.age < a.age);
+@p3
+
+--f Requête avec minus : les code spostaux des villes qui n'ont pas de centenaire. 
+
+EXPLAIN plan FOR
+  SELECT cp
+  FROM BigAnnuaire a
+  minus
+   SELECT cp
+   FROM BigAnnuaire b
+   WHERE b.age>=100;
+@p3
+
+--f.1 Sous-requête de la question f)
+
+EXPLAIN plan FOR
+   SELECT cp
+   FROM BigAnnuaire b
+   WHERE b.age>=100;
+@p3
 
 
 
