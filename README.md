@@ -4,4 +4,4 @@ Ce repo contient le travail effectué lors des séances de TME du module Bases d
 
 Il contient donc les travails des séances suivantes:
 
-- [**Séance 1 :** TME Index](tmeIndex/Reponses.md)
+- [**Séance 1 :** TME Index](tmeIndex/README.md)
