@@ -21,10 +21,10 @@ PLAN_TABLE_OUTPUT
 Plan hash value: 1255195813
 
 ----------------------------------------------
-| Id  | Operation      | Name     | Rows  |
+| Id  | Operation         | Name     | Rows   |
 ----------------------------------------------
-|   0 | SELECT STATEMENT  |         |    2000 |
-|   1 |  TABLE ACCESS FULL| ANNUAIRE |    2000 |
+|   0 | SELECT STATEMENT  |          |    2000|
+|   1 |  TABLE ACCESS FULL| ANNUAIRE |    2000|
 ----------------------------------------------
 
 Column Projection Information (identified by operation id):
