@@ -44,7 +44,7 @@ EXPLAIN plan FOR
 ```
 
 **Réponse :**
-L'éxécution retourne le suivant:
+L'exécution retourne le suivant:
 
 ```sql
 PLAN_TABLE_OUTPUT
@@ -110,7 +110,7 @@ explain plan for
 @p3
 ```
 
-Ce requête nous permet d'afficher les statistiques concernant les valeus distincts de l'attribut prenom dans la table BigAnnuire.
+Ce requête nous permet d'afficher les statistiques concernant les valeurs distincts de l'attribut prenom dans la table BigAnnuaire.
 
 **Résultat**
 L'exécution du requête donne l'affichage suivant :
@@ -135,7 +135,7 @@ Column Projection Information (identified by operation id):
    2 - "PRENOM"[VARCHAR2,30]
 ```
 
-D'après cet affichage on peut observer que le DISTINCT permet de sélectionner que 90 lignes parmis les 220 000. Donc on peut dire que **le nombre des valeurs distinct de l'attribut prenom est 90**
+D'après cet affichage on peut observer que le DISTINCT permet de sélectionner que 90 lignes parmi les 220 000. Donc on peut dire que **le nombre des valeurs distinct de l'attribut prenom est 90**
 
 ```sql
 explain plan for
@@ -198,7 +198,7 @@ Column Projection Information (identified by operation id):
    2 - "CP"[NUMBER,22]
 ```
 
-D'après cet affichage on peut observer que DISTINCT nous permet de retourner 1000 lignes parmis les 220 000. Donc on peut dire que **le nombre des valeurs distinct de l'attribut est 1000.**
+D'après cet affichage on peut observer que DISTINCT nous permet de retourner 1000 lignes parmi les 220 000. Donc on peut dire que **le nombre des valeurs distinct de l'attribut est 1000.**
 
 ### REMARQUE
 
