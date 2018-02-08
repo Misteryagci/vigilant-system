@@ -22,7 +22,7 @@ Dans ce TME on interroge les deux tables Annuaire et BigAnnuaire.
 | Table         | Nombre de tuplets  | Taille (moyenne) d'un tuple |
 |:-------------:|:------------------:|:------------------:|
 |Annuaire|2000|3846|
-|BigAnnuaire|2Z0 000|3846|
+|BigAnnuaire|220 000|3846|
 
 Les schémas des deux tables sont identiques et contiennent les attributs suivants:
 

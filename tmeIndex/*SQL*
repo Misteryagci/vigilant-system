@@ -1,0 +1,1263 @@
+
+SQL*Plus: Release 11.2.0.3.0 Production on Mer. Févr. 7 14:04:01 2018
+
+Copyright (c) 1982, 2011, Oracle.  All rights reserved.
+
+
+Connecté à :
+Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+Chargement du fichier login.sql contenu dans le dossier $SQLPATH
+
+UE 3I009
+========
+* Pour utiliser la base tennis, exécuter la commande @tennis
+
+UE 2I009
+========
+* TME 4 : utiliser la base JO_v1 en exécutant @jo_v1
+* TME 5, 6 et 7 : utiliser les bases JO_v2 et Foofle en exécutant @jo_v2 et @foofle
+
+AUTRES COMMANDES
+================
+* Pour vider toute votre base de données exécuter la commande @vider
+SQL> vous etes E3201099
+drop table ANNUAIRE cascade constraints;
+drop table VILLE cascade constraints;
+purge recyclebin;
+drop PROCEDURE AJOUTER ;
+drop PROCEDURE AJOUTERVILLES ;
+drop SYNONYM BIGANNUAIRE ;
+drop SYNONYM BIGANNUAIRESIMPLE ;
+purge recyclebin;
+
+Procédure PL/SQL terminée avec succès.
+
+SQL> 
+Corbeille purgée.
+
+drop table Annuaire
+           *
+ERREUR à la ligne 1 :
+ORA-00942: Table ou vue inexistante
+
+
+
+Table créée.
+
+drop table Ville
+           *
+ERREUR à la ligne 1 :
+ORA-00942: Table ou vue inexistante
+
+
+
+Table créée.
+
+
+Procédure créée.
+
+Pas d'erreur.
+
+Procédure créée.
+
+Pas d'erreur.
+
+Procédure PL/SQL terminée avec succès.
+
+
+Index créé.
+
+
+Index créé.
+
+analyse le contenu de la table Annuaire appartenant à :
+USER est "E3201099"
+
+Procédure PL/SQL terminée avec succès.
+
+les tables analysées :
+
+TABLE_NAME                     ANALYSÉ
+------------------------------ ---------
+VILLE			       YES
+ANNUAIRE		       YES
+
+2 ligne(s) sélectionnée(s).
+
+les index analysés :
+
+INDEX_NAME                     ANALYSÉ
+------------------------------ ---------
+INDEXAGE		       YES
+INDEXCP 		       YES
+
+2 ligne(s) sélectionnée(s).
+
+
+Synonyme créé.
+
+
+Synonyme créé.
+
+fin du ficher annuaire.sql
+
+SQL> 
+Explicité.
+
+SQL> 
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 513054719
+
+------------------------------------------------------------
+| Id  | Operation		     | Name	   | Rows  |
+------------------------------------------------------------
+|   0 | SELECT STATEMENT	     |		   |  2200 |
+|*  1 |  HASH JOIN		     |		   |  2200 |
+|   2 |   TABLE ACCESS FULL	     | VILLE	   |  1000 |
+|   3 |   TABLE ACCESS BY INDEX ROWID| BIGANNUAIRE |  2200 |
+|*  4 |    INDEX RANGE SCAN	     | INDEXAGE    |  2200 |
+------------------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - access("A"."CP"="V"."CP")
+   4 - access("A"."AGE"=18)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - (#keys=1) "V"."VILLE"[VARCHAR2,30], "A"."NOM"[VARCHAR2,30],
+       "A"."PRENOM"[VARCHAR2,30]
+   2 - "V"."VILLE"[VARCHAR2,30], "V"."CP"[NUMBER,22]
+   3 - "A"."NOM"[VARCHAR2,30], "A"."PRENOM"[VARCHAR2,30],
+       "A"."CP"[NUMBER,22]
+   4 - "A".ROWID[ROWID,10]
+SQL> 
+Explicité.
+
+SQL> 
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 3467006727
+
+---------------------------------------------------------
+| Id  | Operation		     | Name	| Rows	|
+---------------------------------------------------------
+|   0 | SELECT STATEMENT	     |		|    20 |
+|*  1 |  HASH JOIN		     |		|    20 |
+|   2 |   TABLE ACCESS BY INDEX ROWID| ANNUAIRE |    20 |
+|*  3 |    INDEX RANGE SCAN	     | INDEXAGE |    20 |
+|   4 |   TABLE ACCESS FULL	     | VILLE	|  1000 |
+---------------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - access("A"."CP"="V"."CP")
+   3 - access("A"."AGE"=18)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - (#keys=1) "A"."NOM"[VARCHAR2,30], "A"."PRENOM"[VARCHAR2,30],
+       "V"."VILLE"[VARCHAR2,30]
+   2 - "A"."NOM"[VARCHAR2,30], "A"."PRENOM"[VARCHAR2,30],
+       "A"."CP"[NUMBER,22]
+   3 - "A".ROWID[ROWID,10]
+   4 - "V"."VILLE"[VARCHAR2,30], "V"."CP"[NUMBER,22]
+SQL> 
+Explicité.
+
+SQL> 
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 513054719
+
+------------------------------------------------------------
+| Id  | Operation		     | Name	   | Rows  |
+------------------------------------------------------------
+|   0 | SELECT STATEMENT	     |		   |  2200 |
+|*  1 |  HASH JOIN		     |		   |  2200 |
+|   2 |   TABLE ACCESS FULL	     | VILLE	   |  1000 |
+|   3 |   TABLE ACCESS BY INDEX ROWID| BIGANNUAIRE |  2200 |
+|*  4 |    INDEX RANGE SCAN	     | INDEXAGE    |  2200 |
+------------------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - access("A"."CP"="V"."CP")
+   4 - access("A"."AGE"=18)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - (#keys=1) "V"."VILLE"[VARCHAR2,30], "A"."NOM"[VARCHAR2,30],
+       "A"."PRENOM"[VARCHAR2,30]
+   2 - "V"."VILLE"[VARCHAR2,30], "V"."CP"[NUMBER,22]
+   3 - "A"."NOM"[VARCHAR2,30], "A"."PRENOM"[VARCHAR2,30],
+       "A"."CP"[NUMBER,22]
+   4 - "A".ROWID[ROWID,10]
+SQL> 
+Explicité.
+
+SQL> 
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 304907461
+
+--------------------------------------------------
+| Id  | Operation	      | Name	 | Rows  |
+--------------------------------------------------
+|   0 | SELECT STATEMENT      | 	 |   100 |
+|   1 |  HASH GROUP BY	      | 	 |   100 |
+|   2 |   INDEX FAST FULL SCAN| INDEXAGE |   220K|
+--------------------------------------------------
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - (#keys=1) "AGE"[NUMBER,22], COUNT(*)[22]
+   2 - "AGE"[NUMBER,22]
+SQL> 
+Explicité.
+
+SQL> 
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 3325678318
+
+---------------------------------------------------
+| Id  | Operation	       | Name	  | Rows  |
+---------------------------------------------------
+|   0 | SELECT STATEMENT       |	  |	5 |
+|*  1 |  FILTER 	       |	  |	  |
+|   2 |   HASH GROUP BY        |	  |	5 |
+|   3 |    INDEX FAST FULL SCAN| INDEXAGE |   220K|
+---------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - filter(COUNT(*)>200)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "AGE"[NUMBER,22], COUNT(*)[22]
+   2 - (#keys=1) "AGE"[NUMBER,22], COUNT(*)[22]
+   3 - "AGE"[NUMBER,22]
+SQL> 
+Explicité.
+
+SQL> 
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 304907461
+
+--------------------------------------------------
+| Id  | Operation	      | Name	 | Rows  |
+--------------------------------------------------
+|   0 | SELECT STATEMENT      | 	 |   100 |
+|   1 |  HASH GROUP BY	      | 	 |   100 |
+|   2 |   INDEX FAST FULL SCAN| INDEXAGE |   220K|
+--------------------------------------------------
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - (#keys=1) "AGE"[NUMBER,22], COUNT(*)[22]
+   2 - "AGE"[NUMBER,22]
+SQL> 
+Explicité.
+
+SQL> 
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 304907461
+
+--------------------------------------------------
+| Id  | Operation	      | Name	 | Rows  |
+--------------------------------------------------
+|   0 | SELECT STATEMENT      | 	 |   100 |
+|   1 |  HASH GROUP BY	      | 	 |   100 |
+|   2 |   INDEX FAST FULL SCAN| INDEXAGE |   220K|
+--------------------------------------------------
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - (#keys=1) "AGE"[NUMBER,22], COUNT(*)[22]
+   2 - "AGE"[NUMBER,22]
+SQL> select age, count(*) from BigAnnuaire a group by age;
+
+       AGE   COUNT(*)
+---------- ----------
+	 1	 2107
+	22	 2136
+	25	 2208
+	30	 2159
+	34	 2215
+	42	 2239
+	43	 2103
+	51	 2184
+	54	 2254
+	57	 2285
+	78	 2213
+	83	 2229
+	87	 2258
+	91	 2262
+       100	 2254
+	 6	 2183
+	11	 2230
+	13	 2211
+	28	 2344
+	29	 2087
+	44	 2178
+	47	 2228
+	59	 2157
+	76	 2130
+	77	 2203
+	 2	 2091
+	14	 2235
+	20	 2170
+	21	 2254
+	26	 2153
+	31	 2306
+	66	 2192
+	70	 2122
+	72	 2273
+	84	 2346
+	86	 2179
+	88	 2361
+	90	 2114
+	95	 2084
+	 4	 2211
+	 5	 2091
+	24	 2351
+	32	 2160
+	46	 2118
+	53	 2137
+	68	 2156
+	81	 2224
+	85	 2183
+	94	 2236
+	96	 2117
+	 8	 2325
+	17	 2256
+	23	 2333
+	35	 2118
+	37	 2268
+	38	 2274
+	48	 2151
+	55	 2104
+	61	 2214
+	63	 2109
+	69	 2322
+	74	 2391
+	75	 2073
+	33	 2203
+	40	 2193
+	41	 2209
+	45	 2170
+	50	 2188
+	52	 2060
+	56	 2133
+	71	 2303
+	80	 2150
+	93	 2208
+	99	 2134
+	 3	 2267
+	 7	 2193
+	18	 2185
+	27	 2211
+	36	 2157
+	49	 2067
+	58	 2332
+	64	 2396
+	89	 2312
+	97	 2233
+	 9	 2290
+	10	 2190
+	12	 2241
+	15	 2155
+	16	 2184
+	19	 2130
+	39	 2263
+	60	 2228
+	62	 2149
+	65	 2132
+	67	 2182
+	73	 2121
+	79	 2166
+	82	 2094
+	92	 2159
+	98	 2153
+
+100 ligne(s) sélectionnée(s).
+
+SQL> select age ,count(*) from BigAnnuaire a group by age having count(*)>200;
+select age count(*) from BigAnnuaire a group by age having count(*)>200
+                *
+ERREUR à la ligne 1 :
+ORA-00923: mot-clé FROM absent à l'emplacement prévu
+
+
+SQL> select age ,count(*) from BigAnnuaire a group by age having count(*)>200;
+
+       AGE   COUNT(*)
+---------- ----------
+	 1	 2107
+	22	 2136
+	25	 2208
+	30	 2159
+	34	 2215
+	42	 2239
+	43	 2103
+	51	 2184
+	54	 2254
+	57	 2285
+	78	 2213
+	83	 2229
+	87	 2258
+	91	 2262
+       100	 2254
+	 6	 2183
+	11	 2230
+	13	 2211
+	28	 2344
+	29	 2087
+	44	 2178
+	47	 2228
+	59	 2157
+	76	 2130
+	77	 2203
+	 2	 2091
+	14	 2235
+	20	 2170
+	21	 2254
+	26	 2153
+	31	 2306
+	66	 2192
+	70	 2122
+	72	 2273
+	84	 2346
+	86	 2179
+	88	 2361
+	90	 2114
+	95	 2084
+	 4	 2211
+	 5	 2091
+	24	 2351
+	32	 2160
+	46	 2118
+	53	 2137
+	68	 2156
+	81	 2224
+	85	 2183
+	94	 2236
+	96	 2117
+	 8	 2325
+	17	 2256
+	23	 2333
+	35	 2118
+	37	 2268
+	38	 2274
+	48	 2151
+	55	 2104
+	61	 2214
+	63	 2109
+	69	 2322
+	74	 2391
+	75	 2073
+	33	 2203
+	40	 2193
+	41	 2209
+	45	 2170
+	50	 2188
+	52	 2060
+	56	 2133
+	71	 2303
+	80	 2150
+	93	 2208
+	99	 2134
+	 3	 2267
+	 7	 2193
+	18	 2185
+	27	 2211
+	36	 2157
+	49	 2067
+	58	 2332
+	64	 2396
+	89	 2312
+	97	 2233
+	 9	 2290
+	10	 2190
+	12	 2241
+	15	 2155
+	16	 2184
+	19	 2130
+	39	 2263
+	60	 2228
+	62	 2149
+	65	 2132
+	67	 2182
+	73	 2121
+	79	 2166
+	82	 2094
+	92	 2159
+	98	 2153
+
+100 ligne(s) sélectionnée(s).
+
+SQL> 
+Explicité.
+
+SQL> 
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 3325678318
+
+---------------------------------------------------
+| Id  | Operation	       | Name	  | Rows  |
+---------------------------------------------------
+|   0 | SELECT STATEMENT       |	  |	5 |
+|*  1 |  FILTER 	       |	  |	  |
+|   2 |   HASH GROUP BY        |	  |	5 |
+|   3 |    INDEX FAST FULL SCAN| INDEXAGE |   220K|
+---------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - filter(COUNT(*)>200)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "AGE"[NUMBER,22], COUNT(*)[22]
+   2 - (#keys=1) "AGE"[NUMBER,22], COUNT(*)[22]
+   3 - "AGE"[NUMBER,22]
+SQL> 
+Explicité.
+
+SQL> 
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 304907461
+
+--------------------------------------------------
+| Id  | Operation	      | Name	 | Rows  |
+--------------------------------------------------
+|   0 | SELECT STATEMENT      | 	 |   100 |
+|   1 |  HASH GROUP BY	      | 	 |   100 |
+|   2 |   INDEX FAST FULL SCAN| INDEXAGE |   220K|
+--------------------------------------------------
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - (#keys=1) "AGE"[NUMBER,22], COUNT(*)[22]
+   2 - "AGE"[NUMBER,22]
+SQL> select age, count(*) from BigAnnuaire a group by age having count(*)>200;
+
+       AGE   COUNT(*)
+---------- ----------
+	 1	 2107
+	22	 2136
+	25	 2208
+	30	 2159
+	34	 2215
+	42	 2239
+	43	 2103
+	51	 2184
+	54	 2254
+	57	 2285
+	78	 2213
+	83	 2229
+	87	 2258
+	91	 2262
+       100	 2254
+	 6	 2183
+	11	 2230
+	13	 2211
+	28	 2344
+	29	 2087
+	44	 2178
+	47	 2228
+	59	 2157
+	76	 2130
+	77	 2203
+	 2	 2091
+	14	 2235
+	20	 2170
+	21	 2254
+	26	 2153
+	31	 2306
+	66	 2192
+	70	 2122
+	72	 2273
+	84	 2346
+	86	 2179
+	88	 2361
+	90	 2114
+	95	 2084
+	 4	 2211
+	 5	 2091
+	24	 2351
+	32	 2160
+	46	 2118
+	53	 2137
+	68	 2156
+	81	 2224
+	85	 2183
+	94	 2236
+	96	 2117
+	 8	 2325
+	17	 2256
+	23	 2333
+	35	 2118
+	37	 2268
+	38	 2274
+	48	 2151
+	55	 2104
+	61	 2214
+	63	 2109
+	69	 2322
+	74	 2391
+	75	 2073
+	33	 2203
+	40	 2193
+	41	 2209
+	45	 2170
+	50	 2188
+	52	 2060
+	56	 2133
+	71	 2303
+	80	 2150
+	93	 2208
+	99	 2134
+	 3	 2267
+	 7	 2193
+	18	 2185
+	27	 2211
+	36	 2157
+	49	 2067
+	58	 2332
+	64	 2396
+	89	 2312
+	97	 2233
+	 9	 2290
+	10	 2190
+	12	 2241
+	15	 2155
+	16	 2184
+	19	 2130
+	39	 2263
+	60	 2228
+	62	 2149
+	65	 2132
+	67	 2182
+	73	 2121
+	79	 2166
+	82	 2094
+	92	 2159
+	98	 2153
+
+100 ligne(s) sélectionnée(s).
+
+SQL> select age, count(*) from BigAnnuaire a group by age;
+
+       AGE   COUNT(*)
+---------- ----------
+	 1	 2107
+	22	 2136
+	25	 2208
+	30	 2159
+	34	 2215
+	42	 2239
+	43	 2103
+	51	 2184
+	54	 2254
+	57	 2285
+	78	 2213
+	83	 2229
+	87	 2258
+	91	 2262
+       100	 2254
+	 6	 2183
+	11	 2230
+	13	 2211
+	28	 2344
+	29	 2087
+	44	 2178
+	47	 2228
+	59	 2157
+	76	 2130
+	77	 2203
+	 2	 2091
+	14	 2235
+	20	 2170
+	21	 2254
+	26	 2153
+	31	 2306
+	66	 2192
+	70	 2122
+	72	 2273
+	84	 2346
+	86	 2179
+	88	 2361
+	90	 2114
+	95	 2084
+	 4	 2211
+	 5	 2091
+	24	 2351
+	32	 2160
+	46	 2118
+	53	 2137
+	68	 2156
+	81	 2224
+	85	 2183
+	94	 2236
+	96	 2117
+	 8	 2325
+	17	 2256
+	23	 2333
+	35	 2118
+	37	 2268
+	38	 2274
+	48	 2151
+	55	 2104
+	61	 2214
+	63	 2109
+	69	 2322
+	74	 2391
+	75	 2073
+	33	 2203
+	40	 2193
+	41	 2209
+	45	 2170
+	50	 2188
+	52	 2060
+	56	 2133
+	71	 2303
+	80	 2150
+	93	 2208
+	99	 2134
+	 3	 2267
+	 7	 2193
+	18	 2185
+	27	 2211
+	36	 2157
+	49	 2067
+	58	 2332
+	64	 2396
+	89	 2312
+	97	 2233
+	 9	 2290
+	10	 2190
+	12	 2241
+	15	 2155
+	16	 2184
+	19	 2130
+	39	 2263
+	60	 2228
+	62	 2149
+	65	 2132
+	67	 2182
+	73	 2121
+	79	 2166
+	82	 2094
+	92	 2159
+	98	 2153
+
+100 ligne(s) sélectionnée(s).
+
+SQL> 
+Explicité.
+
+SQL> 
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 3325678318
+
+---------------------------------------------------
+| Id  | Operation	       | Name	  | Rows  |
+---------------------------------------------------
+|   0 | SELECT STATEMENT       |	  |	5 |
+|*  1 |  FILTER 	       |	  |	  |
+|   2 |   HASH GROUP BY        |	  |	5 |
+|   3 |    INDEX FAST FULL SCAN| INDEXAGE |   220K|
+---------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - filter(COUNT(*)>200)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "AGE"[NUMBER,22], COUNT(*)[22]
+   2 - (#keys=1) "AGE"[NUMBER,22], COUNT(*)[22]
+   3 - "AGE"[NUMBER,22]
+SQL>   2    3    4    5  
+Explicité.
+
+SQL> 
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 3325678318
+
+---------------------------------------------------
+| Id  | Operation	       | Name	  | Rows  |
+---------------------------------------------------
+|   0 | SELECT STATEMENT       |	  |	5 |
+|*  1 |  FILTER 	       |	  |	  |
+|   2 |   HASH GROUP BY        |	  |	5 |
+|   3 |    INDEX FAST FULL SCAN| INDEXAGE |   220K|
+---------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - filter(COUNT(*)>200)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "AGE"[NUMBER,22], COUNT(*)[22]
+   2 - (#keys=1) "AGE"[NUMBER,22], COUNT(*)[22]
+   3 - "AGE"[NUMBER,22]
+SQL> 
+Explicité.
+
+SQL> 
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 3325678318
+
+---------------------------------------------------
+| Id  | Operation	       | Name	  | Rows  |
+---------------------------------------------------
+|   0 | SELECT STATEMENT       |	  |	5 |
+|*  1 |  FILTER 	       |	  |	  |
+|   2 |   HASH GROUP BY        |	  |	5 |
+|   3 |    INDEX FAST FULL SCAN| INDEXAGE |   220K|
+---------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - filter(COUNT(*)>2000)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "AGE"[NUMBER,22], COUNT(*)[22]
+   2 - (#keys=1) "AGE"[NUMBER,22], COUNT(*)[22]
+   3 - "AGE"[NUMBER,22]
+SQL> 
+Explicité.
+
+SQL> 
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 3325678318
+
+---------------------------------------------------
+| Id  | Operation	       | Name	  | Rows  |
+---------------------------------------------------
+|   0 | SELECT STATEMENT       |	  |	5 |
+|*  1 |  FILTER 	       |	  |	  |
+|   2 |   HASH GROUP BY        |	  |	5 |
+|   3 |    INDEX FAST FULL SCAN| INDEXAGE |   220K|
+---------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - filter(COUNT(*)>20000)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "AGE"[NUMBER,22], COUNT(*)[22]
+   2 - (#keys=1) "AGE"[NUMBER,22], COUNT(*)[22]
+   3 - "AGE"[NUMBER,22]
+SQL>   2    3    4    5  
+Explicité.
+
+SQL> 
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 3325678318
+
+---------------------------------------------------
+| Id  | Operation	       | Name	  | Rows  |
+---------------------------------------------------
+|   0 | SELECT STATEMENT       |	  |	5 |
+|*  1 |  FILTER 	       |	  |	  |
+|   2 |   HASH GROUP BY        |	  |	5 |
+|   3 |    INDEX FAST FULL SCAN| INDEXAGE |   220K|
+---------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - filter(COUNT(*)>20000)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "AGE"[NUMBER,22], COUNT(*)[22]
+   2 - (#keys=1) "AGE"[NUMBER,22], COUNT(*)[22]
+   3 - "AGE"[NUMBER,22]
+SQL> 
+set feedback off
+*
+ERREUR à la ligne 6 :
+ORA-00936: expression absente
+
+
+
+0 ligne(s) supprimée(s).
+
+SQL> 
+set feedback off
+*
+ERREUR à la ligne 6 :
+ORA-00936: expression absente
+
+
+
+0 ligne(s) supprimée(s).
+
+SQL> 
+set feedback off
+*
+ERREUR à la ligne 6 :
+ORA-00936: expression absente
+
+
+
+0 ligne(s) supprimée(s).
+
+SQL> 
+Explicité.
+
+SQL> 
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 304907461
+
+--------------------------------------------------
+| Id  | Operation	      | Name	 | Rows  |
+--------------------------------------------------
+|   0 | SELECT STATEMENT      | 	 |   100 |
+|   1 |  HASH GROUP BY	      | 	 |   100 |
+|   2 |   INDEX FAST FULL SCAN| INDEXAGE |   220K|
+--------------------------------------------------
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - (#keys=1) "AGE"[NUMBER,22], COUNT(*)[22]
+   2 - "AGE"[NUMBER,22]
+SQL> 
+Explicité.
+
+SQL> 
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 3325678318
+
+---------------------------------------------------
+| Id  | Operation	       | Name	  | Rows  |
+---------------------------------------------------
+|   0 | SELECT STATEMENT       |	  |    81 |
+|*  1 |  FILTER 	       |	  |	  |
+|   2 |   HASH GROUP BY        |	  |    81 |
+|   3 |    INDEX FAST FULL SCAN| INDEXAGE |   220K|
+---------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - filter("AGE">20)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "AGE"[NUMBER,22], COUNT(*)[22]
+   2 - (#keys=1) "AGE"[NUMBER,22], COUNT(*)[22]
+   3 - "AGE"[NUMBER,22]
+SQL>   2    3    4    5  
+Explicité.
+
+SQL> 
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 3325678318
+
+---------------------------------------------------
+| Id  | Operation	       | Name	  | Rows  |
+---------------------------------------------------
+|   0 | SELECT STATEMENT       |	  |    81 |
+|*  1 |  FILTER 	       |	  |	  |
+|   2 |   HASH GROUP BY        |	  |    81 |
+|   3 |    INDEX FAST FULL SCAN| INDEXAGE |   220K|
+---------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - filter("AGE">20)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "AGE"[NUMBER,22], COUNT(*)[22]
+   2 - (#keys=1) "AGE"[NUMBER,22], COUNT(*)[22]
+   3 - "AGE"[NUMBER,22]
+SQL> 
+Explicité.
+
+SQL> 
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 3325678318
+
+---------------------------------------------------
+| Id  | Operation	       | Name	  | Rows  |
+---------------------------------------------------
+|   0 | SELECT STATEMENT       |	  |    81 |
+|*  1 |  FILTER 	       |	  |	  |
+|   2 |   HASH GROUP BY        |	  |    81 |
+|   3 |    INDEX FAST FULL SCAN| INDEXAGE |   220K|
+---------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - filter("AGE">20)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "AGE"[NUMBER,22], COUNT(*)[22]
+   2 - (#keys=1) "AGE"[NUMBER,22], COUNT(*)[22]
+   3 - "AGE"[NUMBER,22]
+SQL> 
+Explicité.
+
+SQL> 
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 3325678318
+
+---------------------------------------------------
+| Id  | Operation	       | Name	  | Rows  |
+---------------------------------------------------
+|   0 | SELECT STATEMENT       |	  |	5 |
+|*  1 |  FILTER 	       |	  |	  |
+|   2 |   HASH GROUP BY        |	  |	5 |
+|   3 |    INDEX FAST FULL SCAN| INDEXAGE |   220K|
+---------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - filter(COUNT(*)>1)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "AGE"[NUMBER,22], COUNT(*)[22]
+   2 - (#keys=1) "AGE"[NUMBER,22], COUNT(*)[22]
+   3 - "AGE"[NUMBER,22]
+SQL> 
+Explicité.
+
+SQL> 
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 3325678318
+
+---------------------------------------------------
+| Id  | Operation	       | Name	  | Rows  |
+---------------------------------------------------
+|   0 | SELECT STATEMENT       |	  |	5 |
+|*  1 |  FILTER 	       |	  |	  |
+|   2 |   HASH GROUP BY        |	  |	5 |
+|   3 |    INDEX FAST FULL SCAN| INDEXAGE |   220K|
+---------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - filter(COUNT(*)>1)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "AGE"[NUMBER,22], COUNT(*)[22]
+   2 - (#keys=1) "AGE"[NUMBER,22], COUNT(*)[22]
+   3 - "AGE"[NUMBER,22]
+SQL> 
+Explicité.
+
+SQL> 
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 4247486214
+
+-------------------------------------------------
+| Id  | Operation	  | Name	| Rows	|
+-------------------------------------------------
+|   0 | SELECT STATEMENT  |		|   220K|
+|   1 |  TABLE ACCESS FULL| BIGANNUAIRE |   220K|
+-------------------------------------------------
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "A"."NOM"[VARCHAR2,30], "A"."PRENOM"[VARCHAR2,30],
+       "A"."AGE"[NUMBER,22], "A"."CP"[NUMBER,22], "A"."TEL"[VARCHAR2,10],
+       "A"."PROFIL"[VARCHAR2,4000]
+SQL>   2    3  
+Explicité.
+
+SQL> 
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 4247486214
+
+-------------------------------------------------
+| Id  | Operation	  | Name	| Rows	|
+-------------------------------------------------
+|   0 | SELECT STATEMENT  |		|   220K|
+|   1 |  TABLE ACCESS FULL| BIGANNUAIRE |   220K|
+-------------------------------------------------
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "A"."NOM"[VARCHAR2,30], "A"."PRENOM"[VARCHAR2,30],
+       "A"."AGE"[NUMBER,22], "A"."CP"[NUMBER,22], "A"."TEL"[VARCHAR2,10],
+       "A"."PROFIL"[VARCHAR2,4000]
+SQL>     SELECT age, COUNT(*)
+           *
+ERREUR à la ligne 2 :
+ORA-00937: la fonction de groupe ne porte pas sur un groupe simple
+
+
+SQL> 
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Error: cannot fetch last explain plan from plan_table
+SQL> 
+Explicité.
+
+SQL> 
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 304907461
+
+--------------------------------------------------
+| Id  | Operation	      | Name	 | Rows  |
+--------------------------------------------------
+|   0 | SELECT STATEMENT      | 	 |   100 |
+|   1 |  HASH GROUP BY	      | 	 |   100 |
+|   2 |   INDEX FAST FULL SCAN| INDEXAGE |   220K|
+--------------------------------------------------
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - (#keys=1) "AGE"[NUMBER,22], COUNT(*)[22]
+   2 - "AGE"[NUMBER,22]
+SQL> 
+Explicité.
+
+SQL> 
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 3325678318
+
+---------------------------------------------------
+| Id  | Operation	       | Name	  | Rows  |
+---------------------------------------------------
+|   0 | SELECT STATEMENT       |	  |	5 |
+|*  1 |  FILTER 	       |	  |	  |
+|   2 |   HASH GROUP BY        |	  |	5 |
+|   3 |    INDEX FAST FULL SCAN| INDEXAGE |   220K|
+---------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - filter(COUNT(*)>100)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "AGE"[NUMBER,22], COUNT(*)[22]
+   2 - (#keys=1) "AGE"[NUMBER,22], COUNT(*)[22]
+   3 - "AGE"[NUMBER,22]
+SQL> 
+Explicité.
+
+SQL> 
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 304907461
+
+--------------------------------------------------
+| Id  | Operation	      | Name	 | Rows  |
+--------------------------------------------------
+|   0 | SELECT STATEMENT      | 	 |   100 |
+|   1 |  HASH GROUP BY	      | 	 |   100 |
+|   2 |   INDEX FAST FULL SCAN| INDEXAGE |   220K|
+--------------------------------------------------
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - (#keys=1) "AGE"[NUMBER,22], COUNT(*)[22]
+   2 - "AGE"[NUMBER,22]
+SQL> 
+Explicité.
+
+SQL> 
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 3325678318
+
+---------------------------------------------------
+| Id  | Operation	       | Name	  | Rows  |
+---------------------------------------------------
+|   0 | SELECT STATEMENT       |	  |	5 |
+|*  1 |  FILTER 	       |	  |	  |
+|   2 |   HASH GROUP BY        |	  |	5 |
+|   3 |    INDEX FAST FULL SCAN| INDEXAGE |   220K|
+---------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - filter(COUNT(*)>200)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "AGE"[NUMBER,22], COUNT(*)[22]
+   2 - (#keys=1) "AGE"[NUMBER,22], COUNT(*)[22]
+   3 - "AGE"[NUMBER,22]
+SQL> PLAN_TABLE_OUTPUT
+SP2-0734: commande inconnue au début de "PLAN_TABLE..." - le reste de la ligne est ignoré.
+SQL> 
