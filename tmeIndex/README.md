@@ -29,7 +29,7 @@ Les schémas des deux tables sont identiques et contiennent les attributs suivan
 | Attribut | Valeurs distinctes | Domaine | Type | Index |
 |:--------:|:------------------:|:-------:|:----:|:-----:|
 | âge | 100 | [1-100] | NUMBER(3) | IndexAge |
-| cp | 1000 | [1000,100900] multiples de &00 | NUMBER(3) | IndexCP |
+| cp | 1000 | [1000,100900] multiples de 100 | NUMBER(3) | IndexCP |
 | nom | 100 | - | VARCHAR2(30) | - |
 | prénom | 90 | - | VARCHAR2(30) | - |
 | tel | 100 000 pour BigAnnuaire | - | VARCHAR2(10) | - |
