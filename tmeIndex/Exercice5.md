@@ -507,4 +507,27 @@ Comme on peut remarquer, les opérations **4** et **5** de l'exécution principa
 3. **`TABLE ACCESS FULL`** : Cette opération permet de parcourir tous les valeurs contenues dans la table, autrement dit il fait un parcours complet de la table. Dans notre cas la table est la table BigAnnuaire.
 4. **`SORT UNIQUE`**: Cette opération permet de trier les valeurs distinctes contenus dans une liste. Dans notre cas cette liste est le résultat de la sous-requête qu'on a examiné précédemment. Pour cette opération de trie et filtrage des doublons fait avec les prédicats suivantes:  `access("A"."AGE"<"B"."AGE")` `filter("A"."AGE"<"B"."AGE")`
 
+## Question h) Requete avec UNION, avec UNION ALL, avec une division, … 
 
+On va examiner différentes requêtes sous 6 sous-catégories d'après la documentation d'Oracle. D'après le documentation d'Oracle les opérateurs de SQL peut être classés sous forme de 6 catégories, qui sont les suivantes
+
+### Question h.1) Requêtes avec des opérateurs arithmétiques
+
+Dans ce catégorie on a 6 différentes opérateurs qui sont les suivantes
+
+#### 1. Requête avec l'opérateur + (unaire)
+
+La documentation d'Oracle indique que cette opérateur permet de rendre l'opérande positif
+
+```sql
+EXPLAIN plan FOR
+SELECT +a.age 
+FROM BigAnnuaire a
+@p3
+```
+
+L'exécution de la requête retourne l'affichage suivante:
+
+#### 2. Requête avec l'opérateur - (unaire)
+
+La documentation d'Oracle indique que cette opération permet de rendre l'opérane négatif.
