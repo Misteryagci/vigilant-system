@@ -62,14 +62,16 @@ const ville : Ville[];/* On suppose que cette table est bien définie*/
 interface Annuaire: {nom:String,age:number,tel:String,prenom:String,cp;number,profil:String};
 const annuaire: Annuaire[] /* On suppose que cette table existe aussi*/
 
-let hashT: HashTable<{nom:String,prenom:String,ville:String}> = {}; /* On créé alors un table d'hachage qui est initialisé à vide */
+let hashT: HashTable<{l: {nom:String,prenom:String}[],ville:String}> = {}; /* On créé alors un table d'hachage qui est initialisé à vide */
 const indexAge = annuaire.filter(a => a.age === 18); /* On crée un index depuis la table annuaire avec les éléments de la table dont l'attribut age est égale à 18 */
 for (var i = 0; i < indexAge.length; i++)
-[
+{
     /* On parcourt cette table par le numéro de la ligne. Et on ajoute les valeurs dans la table d'hachage par l'attribut code postal */
-    hashT[indexAge[i.cp].nom = indexAge[i].nom;
-    hashT[indexAge[i.cp].prenom = indexAge[i].prenom;
-]1
+    hashT[indexAge[i.cp]].l.push({
+                                    nom:indexAge[i].nom,
+                                    prenom:indexAge[i].prenom
+                                }); 
+}
 
 for (var v of ville)
 {
@@ -80,7 +82,10 @@ for (var v of ville)
 for (var h of hashT)
 {
     /* On parcourt la table d'hachage pour afficher les valeurs */
-    console.log('' + h.nom + ' ' + h.prenom + ' ' + h.ville);
+    for (l1 of h.l)
+    {
+        console.log('' + l1.nom + ' ' + l1.prenom + ' ' + h.ville);
+    }
 }
 ```
 
@@ -152,7 +157,13 @@ interface BigAnnuaire: {
                             profil:String
                         };
 const bigAnnuaire: BigAnnuaire[] /* On suppose que cette table existe aussi*/
-let hashT: HashTable<{nom:String,prenom:String,ville:String}> = {}; /* On créé alors un table d'hachage qui est initialisé à vide */
+let hashT: HashTable<{
+                        l:{
+                            nom:String,
+                            prenom:String
+                        }[],
+                        ville:String
+                    }> = {}; /* On créé alors un table d'hachage qui est initialisé à vide */
 for (var v of ville)
 {
     /* On parcourt la table des villes en entière et on les ajoute à la table d'hachage par l'attribut code postal*/
@@ -162,14 +173,19 @@ const indexAge = bigAnnuaire.filter(ba => { ba.age === 18}); /* On crée ici la 
 /* On parcourt la table indexAge par le numéro de ligne */
 for (var i = 0; i<indexAge.length; ++)
 {
-    hashT[indexAge[i].cp].nom = indexAge[î].nom;
-    hashT[indexAge[i].cp].prenom = indexAge[i].prenom;
+    hashT[indexAge[i].cp].l.push({
+                                    nom:indexAge[î].nom,
+                                    prenom:indexAge[i].prenom
+                                });
 }
 
 for (var h of hashT)
 {
     /* On parcourt la table d'hachage pour afficher les valeurs */
-    console.log('' + h.nom + ' ' + h.prenom + ' ' + h.ville);
+    for (l1 of h.l)
+    {
+        console.log('' + l1.nom + ' ' + l1.prenom + ' ' + h.ville);
+    }
 }
 ```
 

@@ -1042,6 +1042,50 @@ Ces deux exécutions sont pareil que les deux exécutions de la question précé
 
 #### 4. Opérateur `IN`
 
+Cette opérateur permet de tester si la valeur est égale à au moins une des éléments de la liste. Pour tester l'exécution de cette requête on exécute la requête suivante:
+
+```sql
+EXPLAIN plan FOR
+    SELECT a.nom, a.prenom
+    FROM BigAnnuaire a
+    WHERE a.prenom IN ( SELECT b.prenom
+                        FROM BigAnnuaire b
+			WHERE b.age<=7);
+@p3
+```
+
+L'exécution de cette requête nous donne l'affichage suivant:
+
+```sql
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 336862446
+
+------------------------------------------------------------
+| Id  | Operation		     | Name	   | Rows  |
+------------------------------------------------------------
+|   0 | SELECT STATEMENT	     |		   |   220K|
+|*  1 |  HASH JOIN RIGHT SEMI	     |		   |   220K|
+|   2 |   TABLE ACCESS BY INDEX ROWID| BIGANNUAIRE | 15533 |
+|*  3 |    INDEX RANGE SCAN	     | INDEXAGE    | 15533 |
+|   4 |   TABLE ACCESS FULL	     | BIGANNUAIRE |   220K|
+------------------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - access("A"."PRENOM"="B"."PRENOM")
+   3 - access("B"."AGE"<=7)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - (#keys=1) "A"."PRENOM"[VARCHAR2,30], "A"."NOM"[VARCHAR2,30]
+   2 - "B"."PRENOM"[VARCHAR2,30]
+   3 - "B".ROWID[ROWID,10]
+   4 - "A"."NOM"[VARCHAR2,30], "A"."PRENOM"[VARCHAR2,30]
+```
+
 #### 5. Opérateur ` NOT IN`
 
-On avait examiné l'exécution de cette opérateur dans une question précédente ([voir la question d)](##QuestiondRequêteavec`notin`)).
+On avait examiné l'exécution de cette opérateur dans une question précédente ([voir la question d)](#question-d-requête-avec-not-in)).
