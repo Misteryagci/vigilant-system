@@ -507,7 +507,7 @@ Comme on peut remarquer, les opérations **4** et **5** de l'exécution principa
 3. **`TABLE ACCESS FULL`** : Cette opération permet de parcourir tous les valeurs contenues dans la table, autrement dit il fait un parcours complet de la table. Dans notre cas la table est la table BigAnnuaire.
 4. **`SORT UNIQUE`**: Cette opération permet de trier les valeurs distinctes contenus dans une liste. Dans notre cas cette liste est le résultat de la sous-requête qu'on a examiné précédemment. Pour cette opération de trie et filtrage des doublons fait avec les prédicats suivantes:  `access("A"."AGE"<"B"."AGE")` `filter("A"."AGE"<"B"."AGE")`
 
-## Question h) Requete avec UNION, avec UNION ALL, avec une division, … 
+## Question h) Requête avec UNION, avec UNION ALL, avec une division, …
 
 On va examiner différentes requêtes sous 6 sous-catégories d'après la documentation d'Oracle. D'après le documentation d'Oracle les opérateurs de SQL peut être classés sous forme de 6 catégories, qui sont les suivantes
 
@@ -515,19 +515,272 @@ On va examiner différentes requêtes sous 6 sous-catégories d'après la docume
 
 Dans ce catégorie on a 6 différentes opérateurs qui sont les suivantes
 
-#### 1. Requête avec l'opérateur + (unaire)
+#### 1. Requête avec l'opérateur `+` (unaire)
 
-La documentation d'Oracle indique que cette opérateur permet de rendre l'opérande positif
+La documentation d'Oracle indique que cette opérateur permet de rendre l'opérande positif. Alors pour voir le plan d'exécution de cet opérateur sur notre table on lance la requête suivante:
 
 ```sql
 EXPLAIN plan FOR
 SELECT +a.age 
-FROM BigAnnuaire a
+FROM BigAnnuaire a;
 @p3
 ```
 
 L'exécution de la requête retourne l'affichage suivante:
 
-#### 2. Requête avec l'opérateur - (unaire)
+```sql
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 4203953806
 
-La documentation d'Oracle indique que cette opération permet de rendre l'opérane négatif.
+-------------------------------------------------
+| Id  | Operation	     | Name	| Rows	|
+-------------------------------------------------
+|   0 | SELECT STATEMENT     |		|   220K|
+|   1 |  INDEX FAST FULL SCAN| INDEXAGE |   220K|
+-------------------------------------------------
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "A"."AGE"[NUMBER,22]
+```
+
+Dans cette exécution on a qu'une seule opération ce qui est **`INDEX FAST FULL SCAN`**. Comme expliqué précédemment cette opération lit l'index en entier (tous les lignes) comme stocké sur le disque. Cette opération est typiquement exécutée à la place d'un parcours complet de table si toutes les colonnes requises sont disponible dans l'index. Dans notre cas l'index qu'elle a lu est l'index `indexAge` que l'Oracle a créé automatiquement pour des raisons d'optimisation.
+
+#### 2. Requête avec l'opérateur `-` (unaire)
+
+La documentation d'Oracle indique que cette opération permet de rendre l'opérande négatif. Alors pour voir le plan d'exécution de cet opérateur sur notre table on lance la requête suivante:
+
+```sql
+EXPLAIN plan FOR
+SELECT -a.age
+FROM BigAnnuaire a;
+@p3
+```
+
+L'exécution de cette requête donne l'affichage suivante:
+
+```sql
+
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 4203953806
+
+-------------------------------------------------
+| Id  | Operation	     | Name	| Rows	|
+-------------------------------------------------
+|   0 | SELECT STATEMENT     |		|   220K|
+|   1 |  INDEX FAST FULL SCAN| INDEXAGE |   220K|
+-------------------------------------------------
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "A"."AGE"[NUMBER,22]
+```
+
+Comme la requête de la question précédente, dans cette affichage on a qu'une seule opération qui est **`INDEX FAST FULL SCAN`** qui permet de lire tous l'index `IndexAge`.
+
+#### 3. Requête avec l'opérateur `/` (sur les dates et les nombres)
+
+La documentation d'Oracle indique que cette opération permet de faire une division entre les deux entiers. Alors pour voir le plan d'exécution de cet opérateur sur notre table on lance la requête suivante:
+
+```sql
+EXPLAIN plan FOR
+SELECT a.age/100
+FROM BigAnnuaire a;
+@p3
+```
+
+L'exécution de cette requête nous retourne l'affichage suivant:
+
+```sql
+
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 4203953806
+
+-------------------------------------------------
+| Id  | Operation	     | Name	| Rows	|
+-------------------------------------------------
+|   0 | SELECT STATEMENT     |		|   220K|
+|   1 |  INDEX FAST FULL SCAN| INDEXAGE |   220K|
+-------------------------------------------------
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "A"."AGE"[NUMBER,22]
+```
+
+Comme dans les deux question précédentes, on a qu'une seule opération qui est `INDEX FAST FULL SCAN` qui nous permet de parcourir tout l'index `IndexAge`.
+
+#### 4. Requête avec l'opérateur `*`
+
+D'après le documentation d'Oracle cette opération permet de réaliser une opération de multiplication. Pour pouvoir examiner le plan d'exécution de cet opérateur on lance la requête suivante:
+
+```sql
+EXPLAIN plan FOR
+SELECT a.age * 100
+FROM BigAnnuaire a;
+@p3
+```
+
+Cette exécution nous affiche le suivant:
+
+```sql
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 4203953806
+
+-------------------------------------------------
+| Id  | Operation	     | Name	| Rows	|
+-------------------------------------------------
+|   0 | SELECT STATEMENT     |		|   220K|
+|   1 |  INDEX FAST FULL SCAN| INDEXAGE |   220K|
+-------------------------------------------------
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "A"."AGE"[NUMBER,22]
+```
+
+Comme les dernières exécutions cette exécution aussi une seule opération qui est `INDEX FAST FULL SCAN` qui permet de lire tous les données contenus dans l'index `indexAge`.
+
+#### 5. Requête avec l'opérateur `+`
+
+D'après la documentation d'Oracle cette opération permet de réaliser une opération d'addition entre deux nombres ou dates. Pour pouvoir examiner le plan d'exécution de cette requête on exécute la requête suivante:
+
+```sql
+EXPLAIN plan FOR
+SELECT a.age + a.cp
+FROM BigAnnuaire a;
+@p3
+```
+
+Cette exécution nous donne l'affichage suivante:
+
+```sql
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 4212934415
+
+-----------------------------------------------------------
+| Id  | Operation	       | Name		  | Rows  |
+-----------------------------------------------------------
+|   0 | SELECT STATEMENT       |		  |   220K|
+|   1 |  VIEW		       | index$_join$_001 |   220K|
+|*  2 |   HASH JOIN	       |		  |	  |
+|   3 |    INDEX FAST FULL SCAN| INDEXAGE	  |   220K|
+|   4 |    INDEX FAST FULL SCAN| INDEXCP	  |   220K|
+-----------------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   2 - access(ROWID=ROWID)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "A"."CP"[NUMBER,22], "A"."AGE"[NUMBER,22]
+   2 - (#keys=1) "A"."AGE"[NUMBER,22], "A"."CP"[NUMBER,22]
+   3 - ROWID[ROWID,10], "A"."AGE"[NUMBER,22]
+   4 - ROWID[ROWID,10], "A"."CP"[NUMBER,22]
+```
+
+Cette exécution contient 4 opérations qui sont les suivantes:
+
+1. `VIEW` : D'après la documentation d'Oracle cette opération permet de créer une table virtuelle.
+2. `HASH JOIN` : D'après la documentation d'Oracle la jointure de hachage charge les enregistrements candidats d'un côté de la jointure dans une table de hachage qui est ensuite sondée pour chaque ligne de l'autre côté de la jointure.
+3. `INDEX FAST FULL SCAN` : Cette opération permet de parcourir toutes les valeurs de l'index `indexAge`.
+4. `INDEX FAST FULL SCAN` : Cette opération permet de parcourir toutes les valeurs de l'index `IndexCP`.
+
+Comme dans la clause `SELECT` de notre requête, on parcourt d'abord les deux index `indexCP` et `indexAge`. Puis on crée une table de hachage en utilisant les valeurs de ces deux indexes qui sont sur la même ligne. Et puis, on crée une table virtuelle en partant de cette table d'hachage pour en suite sélectionner les valeurs qu'on cherche.
+
+#### 6. Requête avec l'opérateur `-`
+
+D'après la documentation d'Oracle cet opérateur permet de faire une soustraction entre deux nombres ou dates. Pour pouvoir examiner le plan d'exécution de cet opérateur on exécute la requête suivante:
+
+```sql
+EXPLAIN plan FOR
+SELECT a.age - a.cp
+FROM BigAnnuaire a;
+@p3
+```
+
+L'exécution de cette requête nous rends l'affichage suivante:
+
+```sql
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 4212934415
+
+-----------------------------------------------------------
+| Id  | Operation	       | Name		  | Rows  |
+-----------------------------------------------------------
+|   0 | SELECT STATEMENT       |		  |   220K|
+|   1 |  VIEW		       | index$_join$_001 |   220K|
+|*  2 |   HASH JOIN	       |		  |	  |
+|   3 |    INDEX FAST FULL SCAN| INDEXAGE	  |   220K|
+|   4 |    INDEX FAST FULL SCAN| INDEXCP	  |   220K|
+-----------------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   2 - access(ROWID=ROWID)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "A"."CP"[NUMBER,22], "A"."AGE"[NUMBER,22]
+   2 - (#keys=1) "A"."AGE"[NUMBER,22], "A"."CP"[NUMBER,22]
+   3 - ROWID[ROWID,10], "A"."AGE"[NUMBER,22]
+   4 - ROWID[ROWID,10], "A"."CP"[NUMBER,22]
+```
+Comme on peut remarquer, le plan d'exécution de la requête avec l'opérateur `-` est identique avec celui avec l'opérateur `+`. On parcourt tous les valeurs dans les deux index et on les met dans une table d'hachage en suite en crée une nouvelle table virtuelle.
+
+**Remarque :**  Exécution des opérateurs arithmétiques consistent seulement de faire un simple parcourt complet de tous les valeurs de l'index si seulement un seul opérande est une colonne de la table. Et dans les cas si les deux opérandes de l'opération sont des colonnes de la table, l'exécution consiste à faire un parcours de chacun des index et de faire une jointure sur ces deux index et aussi de créer une nouvelle table virtuelle à partir de cette jointure.
+
+### Question h.2) Requêtes avec des opérateurs sur les caractères
+
+#### 1. Opérateur `||`
+
+D'après la documentation d'Oracle cette opérateur permet de concaténer deux chaînes de caractères. Pour pouvoir examiner le plan d'exécution de cet opérateur on exécute la requête suivante:
+
+```sql
+EXPLAIN plan FOR 
+SELECT prenom||' '||nom
+FROM BigAnnuaire;
+@p3
+```
+
+L'exécution de cette requête nous donne l'affichage suivant:
+
+```sql
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 4247486214
+
+-------------------------------------------------
+| Id  | Operation	  | Name	| Rows	|
+-------------------------------------------------
+|   0 | SELECT STATEMENT  |		|   220K|
+|   1 |  TABLE ACCESS FULL| BIGANNUAIRE |   220K|
+-------------------------------------------------
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "NOM"[VARCHAR2,30], "PRENOM"[VARCHAR2,30]
+```
+
+Dans ce plan  d'exécution on a qu'une seule opération ce qui est `TABLE ACCESS FULL`. D'après la documentation d'Oracle cette opération est aussi connue sous le nom de parcours complet de table. Elle lit la table entière, toutes les lignes et toutes les colonnes, comme elle est stockée sur le disque. Donc dans notre exemple, on parcourt tout les lignes et les colonnes de la table pour récupérer les valeurs `NOM` et `PRENOM` qu'on va ensuite concaténer dans la clause `SELECT`.
+
+### Question h.2) Requêtes avec des opérateurs sur les caractères
+
+#### 1. Opérateur `||`
+
