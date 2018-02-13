@@ -120,7 +120,7 @@ Column Projection Information (identified by operation id):
 
 L'opération `INDEX FAST FULL SCAN` lit tous les lignes en utilisant l'index IndexCP qui est créé par Oracle pour les raisons d'optimisation. L'opération `SORT AGGREGATE`, d'après le documentation d'Oracle, permet juste agréger les valeurs obtenus par le parcours précédent pour détecter les valeurs minimum et maximum, et il ne trie pas les valuers même si le nom contient **SORT** qui veut dire trier en anglais.
 
-## Question d) Requête avec `not in`
+## Question d) Requête avec `not in`
 
 ```sql
 EXPLAIN plan FOR
@@ -780,7 +780,268 @@ Column Projection Information (identified by operation id):
 
 Dans ce plan  d'exécution on a qu'une seule opération ce qui est `TABLE ACCESS FULL`. D'après la documentation d'Oracle cette opération est aussi connue sous le nom de parcours complet de table. Elle lit la table entière, toutes les lignes et toutes les colonnes, comme elle est stockée sur le disque. Donc dans notre exemple, on parcourt tout les lignes et les colonnes de la table pour récupérer les valeurs `NOM` et `PRENOM` qu'on va ensuite concaténer dans la clause `SELECT`.
 
-### Question h.2) Requêtes avec des opérateurs sur les caractères
+### Question h.3) Requêtes avec des opérateurs de comparaison
 
-#### 1. Opérateur `||`
+#### 1. Opérateur `=`
 
+D'après la documentation d'Oracle cette opérateur permet de faire une teste d'égalité. Pour pouvoir examiner le plan d'exécution de cet opérateur on exécuté la requête suivante:
+
+```sql
+EXPLAIN plan FOR
+SELECT *
+FROM BigAnnuaire a
+WHERE a.age = 20;
+@p3
+```
+
+L'exécution de cette requête nous donne l'affichage suivant:
+
+```sql
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 771811286
+
+-----------------------------------------------------------
+| Id  | Operation		    | Name	  | Rows  |
+-----------------------------------------------------------
+|   0 | SELECT STATEMENT	    |		  |  2200 |
+|   1 |  TABLE ACCESS BY INDEX ROWID| BIGANNUAIRE |  2200 |
+|*  2 |   INDEX RANGE SCAN	    | INDEXAGE	  |  2200 |
+-----------------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   2 - access("A"."AGE"=20)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "A"."NOM"[VARCHAR2,30], "A"."PRENOM"[VARCHAR2,30],
+       "A"."AGE"[NUMBER,22], "A"."CP"[NUMBER,22], "A"."TEL"[VARCHAR2,10],
+       "A"."PROFIL"[VARCHAR2,4000]
+   2 - "A".ROWID[ROWID,10], "A"."AGE"[NUMBER,22]
+```
+
+Sur ce plan d'exécution on a 2 opérations qui sont:
+
+1. `TABLE ACCESS BY INDEX ROWID` : Cette opération récupère une ligne à partir de la table en utilisant ROWID récupéré lors d'une recherche précédente dans l'index.
+2. `INDEX RANGE SCAN` : Cette opération permet de faire un parcours de B-Tree et suit la chaîne des noeuds feuilles pour trouver toutles les entrées correspondantes. Pour cela on utilise un index. Dans notre cas c'est l'index `indexAge`. Le début et la fin de ce parcours de B-Tree sont déterminés par les prédicats. Dans notre exemple on a qu'un seul prédicat de type **ACCESS** qui nous permet de limiter le parcours avec les valeurs de la table dont l'attribut age est égale à 20.
+
+**Conclusion :** Donc on peut dire que l'opérateur `=` qui permet de tester l'égalité nous crée un index sur l'attribut qu'on teste son égalité (Pour les raisons d'optimisation de Oracle). Ainsi, ça nous crée un prédicat de type **ACCESS** qui permet de parcourir que les valeurs dont on teste l'égalité sur l'index créé précédemment.
+
+#### 2. Opérateur de teste d'inégalité `!=` || `^=` || `<>` || `¬=`
+
+Ces opérateurs permettent de tester l'inégalité entre deux valeurs. Pour pouvoir examiner le plan d'exécution de cet opérateur d'inégalité on exécute la requête suivante
+
+```sql
+EXPLAIN plan FOR
+SELECT *
+FROM BigAnnuaire a
+WHERE a.age <> 20;
+@p3
+```
+
+L'exécution de cette requête nous rend l'affichage suivant :
+
+```sql
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 4247486214
+
+-------------------------------------------------
+| Id  | Operation	  | Name	| Rows	|
+-------------------------------------------------
+|   0 | SELECT STATEMENT  |		|   217K|
+|*  1 |  TABLE ACCESS FULL| BIGANNUAIRE |   217K|
+-------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - filter("A"."AGE"<>20)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "A"."NOM"[VARCHAR2,30], "A"."PRENOM"[VARCHAR2,30],
+       "A"."AGE"[NUMBER,22], "A"."CP"[NUMBER,22], "A"."TEL"[VARCHAR2,10],
+       "A"."PROFIL"[VARCHAR2,4000]
+```
+
+Comme on peut observer ici on a qu'une seule opération qui est `TABLE ACCESS FULL` qui est connue sous le nom de parcours complet de table. Elle lit la table entière, toutes les lignes et toutes les colonnes, comme elle est stockée sur le disque. On a aussi un prédicat de type **FILTER** qui permet de filtrer les éléments par rapport à sa condition.
+Dans notre cas, on fait un parcours complet de la table et avec le prédicat filter, on affiche que les valeurs dont l'attribut age est différent de 20.
+
+#### 2. Opérateurs `>` et `<`
+Ces deux opérateurs permettent de faire des tests **plus grand que** et **plus petit que**.
+Pour pouvoir examiner le plan d'exécution de ces deux opérateur on exécuté les requêtes suivantes:
+
+- Requête 1 : **plus grand que**
+
+```sql
+    EXPLAIN plan FOR
+    SELECT *
+    FROM BigAnnuaire a
+    WHERE a.age > 20;
+    @p3
+```
+
+- Requête 2 :**plus petit que**
+
+```sql
+    EXPLAIN plan FOR
+    SELECT *
+    FROM BigAnnuaire a
+    WHERE a.age < 20;
+    @p3
+```
+
+L'exécution de ces deux requêtes nous donne les affichages suivants:
+
+- Affichage de la requête 1
+
+```sql
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 4247486214
+
+-------------------------------------------------
+| Id  | Operation	  | Name	| Rows	|
+-------------------------------------------------
+|   0 | SELECT STATEMENT  |		|   177K|
+|*  1 |  TABLE ACCESS FULL| BIGANNUAIRE |   177K|
+-------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - filter("A"."AGE">20)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "A"."NOM"[VARCHAR2,30], "A"."PRENOM"[VARCHAR2,30],
+       "A"."AGE"[NUMBER,22], "A"."CP"[NUMBER,22], "A"."TEL"[VARCHAR2,10],
+       "A"."PROFIL"[VARCHAR2,4000]
+```
+
+- Affichage de la requête 2
+
+```sql
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 771811286
+
+-----------------------------------------------------------
+| Id  | Operation		    | Name	  | Rows  |
+-----------------------------------------------------------
+|   0 | SELECT STATEMENT	    |		  | 42222 |
+|   1 |  TABLE ACCESS BY INDEX ROWID| BIGANNUAIRE | 42222 |
+|*  2 |   INDEX RANGE SCAN	    | INDEXAGE	  | 42222 |
+-----------------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   2 - access("A"."AGE"<20)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "A"."NOM"[VARCHAR2,30], "A"."PRENOM"[VARCHAR2,30],
+       "A"."AGE"[NUMBER,22], "A"."CP"[NUMBER,22], "A"."TEL"[VARCHAR2,10],
+       "A"."PROFIL"[VARCHAR2,4000]
+   2 - "A".ROWID[ROWID,10], "A"."AGE"[NUMBER,22]
+```
+
+
+Comme on peut voir dans ces deux exécutions Oracle a utilsé un index pour l'exécution de la requête 2 et utiliser un prédicat de type filter sur le parcours complet de la table dans l'exécution de la requête 1. Ce choix est fait par Oracle pour les raisons d'optimisations. Autrement dit, Oracle a préféré de créer un index pour la requête dont le nombre de lignes retournés n'est pas très grand et d'utiliser un prédicat de type filter pour la requête dont le nombre de lignes retournés est très grand *(Le nombre des lignes retournés par la requête 2 est 42222 et le nombre des lignes retournés par la requête 1 est 172 000)*
+
+#### 3. Opérateurs `>=` et `<=`
+
+Ces opérateurs permettent de faire des tests **plus petit ou égal** et **plus grand ou égal**. Pour pouvoir examiner le plan d'exécution de ces deux opérateurs on exécute les deux commandes suivantes:
+
+- Requête 1 `>=`
+
+```sql
+EXPLAIN plan FOR
+SELECT *
+FROM BigAnnuaire a
+WHERE a.age >= 20;
+@p3
+```
+
+- Requête 2 `<=`
+
+```sql
+EXPLAIN plan FOR
+SELECT *
+FROM BigAnnuaire a
+WHERE a.age <= 20;
+@p3
+```
+
+L'exécution de ces deux requêtes rendent ces deux affichages suivants:
+
+- L'afficahage de la requête 1
+
+```sql
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 4247486214
+
+-------------------------------------------------
+| Id  | Operation	  | Name	| Rows	|
+-------------------------------------------------
+|   0 | SELECT STATEMENT  |		|   179K|
+|*  1 |  TABLE ACCESS FULL| BIGANNUAIRE |   179K|
+-------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - filter("A"."AGE">=20)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "A"."NOM"[VARCHAR2,30], "A"."PRENOM"[VARCHAR2,30],
+       "A"."AGE"[NUMBER,22], "A"."CP"[NUMBER,22], "A"."TEL"[VARCHAR2,10],
+       "A"."PROFIL"[VARCHAR2,4000]
+```
+
+- L'affichage de la requête 2
+
+```sql
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 771811286
+
+-----------------------------------------------------------
+| Id  | Operation		    | Name	  | Rows  |
+-----------------------------------------------------------
+|   0 | SELECT STATEMENT	    |		  | 44422 |
+|   1 |  TABLE ACCESS BY INDEX ROWID| BIGANNUAIRE | 44422 |
+|*  2 |   INDEX RANGE SCAN	    | INDEXAGE	  | 44422 |
+-----------------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   2 - access("A"."AGE"<=20)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "A"."NOM"[VARCHAR2,30], "A"."PRENOM"[VARCHAR2,30],
+       "A"."AGE"[NUMBER,22], "A"."CP"[NUMBER,22], "A"."TEL"[VARCHAR2,10],
+       "A"."PROFIL"[VARCHAR2,4000]
+```
+
+Ces deux exécutions sont pareil que les deux exécutions de la question précédente. On peut utiliser le même raisonnement pour l'explication.
+
+#### 4. Opérateur `IN`
+
+#### 5. Opérateur ` NOT IN`
+
+On avait examiné l'exécution de cette opérateur dans une question précédente ([voir la question d)](##QuestiondRequêteavec`notin`)).

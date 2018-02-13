@@ -322,10 +322,108 @@ EXPLAIN plan FOR
    WHERE b.age>=100;
 @p3
 
+--h Requête avec UNION, avec UNION ALL, avec une division, …
+
+--h.1 Requêtes avec des opérateurs arithmétiques
+
+--h.1.1 Requête avec l'opérateur `+` (unaire)
+
+EXPLAIN plan FOR
+SELECT +a.age 
+FROM BigAnnuaire a;
+@p3
+
+--h.1.2 Requête avec l'opérateur `-` (unaire)
+
+EXPLAIN plan FOR
+SELECT -a.age
+FROM BigAnnuaire a;
+@p3
+
+--h.1.3 Requête avec l'opérateur `/` (sur les dates et les nombres)
+
+EXPLAIN plan FOR
+SELECT a.age/100
+FROM BigAnnuaire a;
+@p3
+
+--h.1.4 Requête avec l'opérateur `*`
+
+EXPLAIN plan FOR
+SELECT a.age * 100
+FROM BigAnnuaire a;
+@p3
+
+--h.1.5 Requête avec l'opérateur `+`
+
+EXPLAIN plan FOR
+SELECT a.age + a.cp
+FROM BigAnnuaire a;
+@p3
+
+--h.1.6 Requête avec l'opérateur `-`
+
+EXPLAIN plan FOR
+SELECT a.age - a.cp
+FROM BigAnnuaire a;
+@p3
+
+--h.2 Requêtes avec des opérateurs sur les caractères
+
+--h.2.1 Opérateur `||`
+
+EXPLAIN plan FOR 
+SELECT prenom||' '||nom
+FROM BigAnnuaire;
+@p3
+
+--h.3 Requêtes avec des opérateurs de comparaison
+
+--h.3.1 Opérateur `=`
+
+EXPLAIN plan FOR
+SELECT *
+FROM BigAnnuaire a
+WHERE a.age = 20;
+@p3
+
+--h.3.2 Opérateur `<>`
+
+EXPLAIN plan FOR
+SELECT *
+FROM BigAnnuaire a
+WHERE a.age <> 20;
+@p3
+
+--h.3.3 Opérateurs < et >
+
+EXPLAIN plan FOR
+SELECT *
+FROM BigAnnuaire a
+WHERE a.age > 20;
+@p3
 
 
+EXPLAIN plan FOR
+SELECT *
+FROM BigAnnuaire a
+WHERE a.age < 20;
+@p3
+
+--h.3.4 Opérateurs <= et >=
+
+EXPLAIN plan FOR
+SELECT *
+FROM BigAnnuaire a
+WHERE a.age > 20;
+@p3
 
 
+EXPLAIN plan FOR
+SELECT *
+FROM BigAnnuaire a
+WHERE a.age < 20;
+@p3
 
 -- Exercice 6: Documentation et Requetes sur le catalogue
 -- ======================================================
