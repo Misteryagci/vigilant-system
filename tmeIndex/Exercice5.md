@@ -1050,7 +1050,7 @@ EXPLAIN plan FOR
     FROM BigAnnuaire a
     WHERE a.prenom IN ( SELECT b.prenom
                         FROM BigAnnuaire b
-			WHERE b.age<=7);
+			            WHERE b.age<=7);
 @p3
 ```
 
@@ -1086,6 +1086,24 @@ Column Projection Information (identified by operation id):
    4 - "A"."NOM"[VARCHAR2,30], "A"."PRENOM"[VARCHAR2,30]
 ```
 
+Comme on peut voir sur le plan d'exécution on peut observer qu'il y a 4 opérations qui sont les suivantes:
+
+1. `HASH JOIN RIGHT SEMI`: Cette opération nous permet de réaliser une semi jointure de droite, en utilisant les valeurs obtenu par l'opération 2. et les valeurs obtenues par l'opération 4.
+2. `TABLE ACCESS BY INDEX ROWID`: Permet de parcourir toutes les valeurs stockées dans l'index précédente par le ROWID.
+3. `INDEX RANGE SCAN` : Permet de faire un parcours de B-Tree en déterminant les conditions d'entrée et sor
+4. `TABLE ACCESS FULL` ; Permet de parcourir toutes les lignes et colonne de la table
+
+Alors l'exécution de notre requête consiste à faire un parcours de B-Tree en se limitant sur les valeurs dont l'attribut age est plut petit ou égal à 7 vient de l'exécution de la requête à l'intérieur de l'opérateur `IN` qui est 
+```sql
+SELECT b.prenom
+ FROM BigAnnuaire b
+```
+
+Et puis un parcours complet de la table BigAnnuaire, pour récupérer les attribut prenom et nom.
+
+Une fois que ces deux opérations sont fait, de faire une semi jointure par la droite en se basant sur la condition que les attributs prenom de ces deux valeurs doivent être égaux.
+
 #### 5. Opérateur ` NOT IN`
 
 On avait examiné l'exécution de cette opérateur dans une question précédente ([voir la question d)](#question-d-requête-avec-not-in)).
+

@@ -415,15 +415,26 @@ WHERE a.age < 20;
 EXPLAIN plan FOR
 SELECT *
 FROM BigAnnuaire a
-WHERE a.age > 20;
+WHERE a.age >= 20;
 @p3
 
 
 EXPLAIN plan FOR
 SELECT *
 FROM BigAnnuaire a
-WHERE a.age < 20;
+WHERE a.age <= 20;
 @p3
+
+--h.4.4 Opérateur IN
+
+EXPLAIN plan FOR
+    SELECT a.nom, a.prenom
+    FROM BigAnnuaire a
+    WHERE a.prenom IN ( SELECT b.prenom
+                        FROM BigAnnuaire b
+			WHERE b.age<=7);
+@p3
+
 
 -- Exercice 6: Documentation et Requetes sur le catalogue
 -- ======================================================
