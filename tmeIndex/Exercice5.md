@@ -1535,6 +1535,16 @@ Column Projection Information (identified by operation id):
        "A"."PROFIL"[VARCHAR2,4000]
 ```
 
+Comme on peut observer sur la plan d'exécution, on a 5 opérations qui sont les suivantes:
+
+1. Opération `NTERSECTION`: Cette opération permet de faire l'opération ensembliste sur les deux listes. Dans notre cas ces listes sont les listes retourné par les opérations 2. et 4. qui sont tous les deux des opérations `SORT UNIQUE`.
+2. Opération `SORT UNIQUE` : Cette opération permet de trier une liste et enlever les doublons. Dans notre cas la liste c'est la liste retourné par l'opération 3. qui est une opération `TABLE ACCESS FULL`.
+3. Opération `TABLE ACCESS FULL`: Cette opération permet de faire un parxours complet de la table. Dans notre exemple la table parcouru est la table BigAnnuaire le parcours est suivi par un prédicat de type `filter` qui est le suivant `filter("A"."AGE">=18)`. Ce prédicat permet de filtrer les lignes dont la valeur sur la colonne âge est 18. Cette opération vient de l'exécution de la première requête.
+4. Opération `SORT UNIQUE`: De même que l'opération 2. celle-ci aussi permet de trier la liste et les filtrer de manière enlever les doublons. Dans notre exemple la liste est la liste retourné par l'opération 5. qui est une opération `TABLE FULL ACCESS`.
+5. Opération `TABLE ACCESS FULL` : Idem que l'opération 3. mais cette fois ci les valeurs parcourues sont filtrés par le prédicat de type `filter` suivant `filter(TO_CHAR("A"."CP") LIKE '75%')`. Ce prédicat permet de séléctionner les iignes dont le code postal correspond à un code postal dans Paris.
+
+Alors plus généralement, l'exécution de cette requête consiste d'abors l'exécution de la première requête suivi d'une triage et filtrage des doublons puis l'exécution de la deuxième requête suivie d'une triage et filtrage des doublons. Et en suite une opération ensembliste `INTERSECTION` sur ces deux ensemble obtenues.
+
 #### 3. Opérateur `MINUS`
 
 Cet opérateur a été examiné lors d'une question précédente ([voir la question f)](#question-f-requête-avec-minus--les-code-spostaux-des-villes-qui-nont-pas-de-centenaire)).
