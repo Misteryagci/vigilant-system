@@ -1113,3 +1113,436 @@ D'après la documentation d'Oracle cet opérateur compare une valeur avec chacun
 
 Cet opérateur avait été examiné lors d'une précédente question. ([voir la question g)](#question-g-requête-avec-where-age--all-)).
 
+#### 7. Opérateur `[NOT] BETWEEN`
+
+Cet opérateur permet de définir une plage de valeurs pour l'attribut de table.
+
+Pour pouvoir examiner cet opérateur on exécute la requête suivante
+
+```sql
+EXPLAIN plan FOR
+SELECT *
+FROM BigAnnuaire a
+WHERE a.age
+BETWEEN 1 AND 40;
+@p3
+```
+
+L'exécution de cette requête nous donne l'affichage suivant:
+
+```sql
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 4247486214
+
+-------------------------------------------------
+| Id  | Operation	  | Name	| Rows	|
+-------------------------------------------------
+|   0 | SELECT STATEMENT  |		| 88867 |
+|*  1 |  TABLE ACCESS FULL| BIGANNUAIRE | 88867 |
+-------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - filter("A"."AGE"<=40 AND "A"."AGE">=1)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "A"."NOM"[VARCHAR2,30], "A"."PRENOM"[VARCHAR2,30],
+       "A"."AGE"[NUMBER,22], "A"."CP"[NUMBER,22], "A"."TEL"[VARCHAR2,10],
+       "A"."PROFIL"[VARCHAR2,4000]
+```
+
+Notre requête consiste à sélectionner les lignes dont l'attribut âge est compris entre 1 et 40. Comme on peut observer sur le plan d'exécution de la requête, on a qu'une seule oprération qui est  `TABLE ACCESS FULL` qui permet de faire un parcours complet de la table. En faisant le parcours de la table on applique un prédicat de type **FILTER** pour filtrer que les lignes dont attribut âge est dans la plage qu'on a défini.
+
+Si on ajoute `NOT` a notre requête. On obtient la requête suivante:
+
+```sql
+EXPLAIN plan FOR
+SELECT *
+FROM BigAnnuaire a
+WHERE a.age
+NOT BETWEEN 1 AND 40;
+@p3
+```
+
+Cette requête nous donne l'affichage suivant:
+
+```sql
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 4247486214
+
+-------------------------------------------------
+| Id  | Operation	  | Name	| Rows	|
+-------------------------------------------------
+|   0 | SELECT STATEMENT  |		|   134K|
+|*  1 |  TABLE ACCESS FULL| BIGANNUAIRE |   134K|
+-------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - filter("A"."AGE">40 OR "A"."AGE"<1)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "A"."NOM"[VARCHAR2,30], "A"."PRENOM"[VARCHAR2,30],
+       "A"."AGE"[NUMBER,22], "A"."CP"[NUMBER,22], "A"."TEL"[VARCHAR2,10],
+       "A"."PROFIL"[VARCHAR2,4000]
+```
+
+Comme la requête précédente ici aussi on a qu'une seule opération qui est `TABLE ACCESS FULL`, mais cette fois-ci notre prédicat de filtrage est différent pour convenir les valeurs qui sont pas compris dans la plage qu'on a défini.
+
+#### 8. Opérateur `[NOT] EXISTS`
+
+D'après la documentation d'Oracle cet opérateur retourne `TRUE` si la valeur existe au moins dans une ligne de la table passé comme opérand.
+
+On avait examiné l'opérateur `NOT EXISTS` lors du'une question précédente ([voir la question e)](#question-e-requête-avec-not-exists)). L'opérateur `EXISTS` est traité de même manière.
+
+#### 9. Opérateur `[NOT] LIKE`
+
+Cet opérateur retourne `TRUE` si la chaîne de caractères passée en [ne] convient [pas] au modèle qu'on a déterminé.
+
+Pour pouvoir examiner cet opérateur on exécute la requête suivante:
+
+```sql
+EXPLAIN plan FOR
+SELECT *
+FROM BigAnnuaire a
+WHERE a.cp LIKE '75%';
+@p3
+```
+
+Cette requête permet de sélectionner tous les lignes dont l'attribut CP commence par 75.
+L'exécution de la requête nous retourne l'affichage suivante:
+
+```sql
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 4247486214
+
+-------------------------------------------------
+| Id  | Operation	  | Name	| Rows	|
+-------------------------------------------------
+|   0 | SELECT STATEMENT  |		| 11000 |
+|*  1 |  TABLE ACCESS FULL| BIGANNUAIRE | 11000 |
+-------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - filter(TO_CHAR("A"."CP") LIKE '75%')
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "A"."NOM"[VARCHAR2,30], "A"."PRENOM"[VARCHAR2,30],
+       "A"."AGE"[NUMBER,22], "A"."CP"[NUMBER,22], "A"."TEL"[VARCHAR2,10],
+       "A"."PROFIL"[VARCHAR2,4000]
+```
+Ici aussi, on a qu'une seule opération qui est `TABLE ACCESS FULL` qui nous permet de parcourir tous les lignes et tous les colonnes de la table. Les valeurs parcourus sont filtrés par un prédicat de type `FILTER` afin d'afficher que les lignes dont la valeur sur la colonne CP convient à notre modèle qu'on a déterminé.
+
+#### 10. Opérateur `IS [NOT] NULL`
+
+Cet opérateur permet de tester si la valeur est null. La documentation d'Oracle indique bien que c'est le seul opérateur qui doit être utilisé pour les tests de null.
+
+Pour pouvoir examiner cet opérateur on exécute la requête suivante:
+
+```sql
+EXPLAIN plan FOR
+SELECT *
+FROM BigAnnuaire a
+WHERE a.age IS NULL;
+@p3
+```
+
+Comme dans notre cas tous les colonnes de la table BigAnnuaire sont définies comme `NOT NULL` cette opérateur n'a aucun sens, mais on peut quand même tester pour voir le plan d'exécution. L'exécution de cette requête nous retourne l'affichage suivante:
+
+```sql
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 1021683757
+
+--------------------------------------------------
+| Id  | Operation	   | Name	 | Rows  |
+--------------------------------------------------
+|   0 | SELECT STATEMENT   |		 |     1 |
+|*  1 |  FILTER 	   |		 |	 |
+|   2 |   TABLE ACCESS FULL| BIGANNUAIRE |   220K|
+--------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - filter(NULL IS NOT NULL)
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "A"."NOM"[VARCHAR2,30], "A"."PRENOM"[VARCHAR2,30],
+       "A"."AGE"[NUMBER,22], "A"."CP"[NUMBER,22], "A"."TEL"[VARCHAR2,10],
+       "A"."PROFIL"[VARCHAR2,4000]
+   2 - "A"."NOM"[VARCHAR2,30], "A"."PRENOM"[VARCHAR2,30],
+       "A"."AGE"[NUMBER,22], "A"."CP"[NUMBER,22], "A"."TEL"[VARCHAR2,10],
+       "A"."PROFIL"[VARCHAR2,4000]
+```
+
+Comme on peut observer sur le plan d'exécution on a deux opérations qui sont les suivantes:
+
+1. `FILTER`
+2. `TABLE ACCESS FULL`
+
+La deuxième opération permet de parcourir tous les colonnes et tous les lignes de la table. Et l'opération `FILTER` qui est la première permet de filtrer. Comme dans notre table il n'y a aucun ligne dont la colonne âge est NULL, le prédicat utilisé pour cette opération est le suivant :  `filter(NULL IS NOT NULL)`
+
+On teste cet opérateur on ajoutant `NOT` dans notre requête. Donc la nouvelle requête est la suivante:
+
+```sql
+EXPLAIN plan FOR
+SELECT *
+FROM BigAnnuaire a
+WHERE a.age IS NOT NULL;
+@p3
+```
+
+L'exécution de cette requête nous affiche le suivant:
+
+```sql
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 4247486214
+
+-------------------------------------------------
+| Id  | Operation	  | Name	| Rows	|
+-------------------------------------------------
+|   0 | SELECT STATEMENT  |		|   220K|
+|   1 |  TABLE ACCESS FULL| BIGANNUAIRE |   220K|
+-------------------------------------------------
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "A"."NOM"[VARCHAR2,30], "A"."PRENOM"[VARCHAR2,30],
+       "A"."AGE"[NUMBER,22], "A"."CP"[NUMBER,22], "A"."TEL"[VARCHAR2,10],
+       "A"."PROFIL"[VARCHAR2,4000]
+```
+
+Comme dans notre exemple tous les colonnes sont définis comme non null il s'agit d'un simple parcours complet de la table d'où la seule opération `TABLE ACCESS FULL`.
+
+### Question i) Requêtes avec des opérateurs de logique
+
+Dans cette catégorie on a 3 opérateurs différents qui sont les suivants
+
+#### 1. Opérateur `NOT`
+
+Cette opérateur retourne `TRUE` si la condition qui le suit retourne `FALSE` et vice versa. Cet opérateur est déjà utilisé dans plusieurs question précédentes et ne possèdent pas un effet spéciale sur le plan d'exécution.
+
+#### 2. Opérateur `AND`
+
+Cet opérateur permet faire l'opération logique entre plusieurs conditions. Ceci non plus n'a aucun effet sur le plan d'exécution.
+
+#### 3. Opéerateur `OR`
+
+De même manière cet opérateur permet de faire une opération logique `OR` entre les conditions. Comme les autres, il n'a aucun effet spécial sur le plan d'exécution.
+
+### Question j) Opérateurs SET `UNION [ALL]` `INTERSECT` `MINUS`
+
+#### 1. Opérateur `UNION [ALL]`
+
+- Opérateur `UNION` permet de retourner tous les lignes retournées par l'une des deux requêtes.
+
+Pour examiner cette opérateur on exécute la requête suivante:
+
+```sql
+EXPLAIN plan FOR
+SELECT *
+FROM BigAnnuaire a
+WHERE a.age >= 18
+UNION
+SELECT *
+FROM BigAnnuaire a
+WHERE a.cp LIKE '75%';
+@p3
+```
+
+Cette requête permet de retourner les personnes majeurs et les personnes qui habitent sur Paris.
+
+L'exécution de cette requête retourne l'affichage suivante: 
+
+```sql
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 1195500318
+
+---------------------------------------------------
+| Id  | Operation	    | Name	  | Rows  |
+---------------------------------------------------
+|   0 | SELECT STATEMENT    |		  |   195K|
+|   1 |  SORT UNIQUE	    |		  |   195K|
+|   2 |   UNION-ALL	    |		  |	  |
+|*  3 |    TABLE ACCESS FULL| BIGANNUAIRE |   184K|
+|*  4 |    TABLE ACCESS FULL| BIGANNUAIRE | 11000 |
+---------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   3 - filter("A"."AGE">=18)
+   4 - filter(TO_CHAR("A"."CP") LIKE '75%')
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - (#keys=6) STRDEF[30], STRDEF[30], STRDEF[22], STRDEF[22],
+       STRDEF[10], STRDEF[4000]
+   2 - STRDEF[30], STRDEF[30], STRDEF[22], STRDEF[22], STRDEF[10],
+       STRDEF[4000]
+   3 - "A"."NOM"[VARCHAR2,30], "A"."PRENOM"[VARCHAR2,30],
+       "A"."AGE"[NUMBER,22], "A"."CP"[NUMBER,22], "A"."TEL"[VARCHAR2,10],
+       "A"."PROFIL"[VARCHAR2,4000]
+   4 - "A"."NOM"[VARCHAR2,30], "A"."PRENOM"[VARCHAR2,30],
+       "A"."AGE"[NUMBER,22], "A"."CP"[NUMBER,22], "A"."TEL"[VARCHAR2,10],
+       "A"."PROFIL"[VARCHAR2,4000]
+```
+
+Comme on peut obsever sur le plan d'exécution on a 4 opérations qui sont les suivantes:
+
+1. `SORT UNIQUE` : Cette opération retourne une liste triées des valeurs différentes d'une liste. Dans notre cas la liste c'est la liste retourné par l'opération `UNION ALL`
+2. `UNION-ALL` : Cette opération est la même que l'opérateur `UNION ALL` de SQL, qui concatène deux liste avec les valeurs doublants.
+3. `TABLE ACCESS FULL` : Cette opération permet de faire un parcours complet de la table. Dans notre cas ce parcours et filtré par le prédicat filter suivant `filter("A"."AGE">=18)` donc on peut dire que cette opération vient de la première requête.
+4. `TABLE ACCESS FULL` : De même que l'opération précédente mais cette fois-ci elle est filtré par le prédicat de type filter suivant `filter(TO_CHAR("A"."CP") LIKE '75%')`
+
+Donc on peut observer que l'exécution de l'opérateur `UNION` contient une exécution de l'opération `UNION ALL` et les valeurs sont triées et filtrés de manière enlèver les doublons avec une opération `SORT UNIQUE`.
+
+- Opérateur `UNION ALL` permet de retourner tous les lignes retournées par au moins une des deux requêtes y compris les doublons.
+
+Pour examiner cette opérateur on exécute la requête suivante:
+
+```sql
+EXPLAIN plan FOR
+SELECT *
+FROM BigAnnuaire a
+WHERE a.age >= 18
+UNION ALL
+SELECT *
+FROM BigAnnuaire a
+WHERE a.cp LIKE '75%';
+@p3
+```
+
+L'exécution de cette opération nous retourne l'affichage suivante:
+
+```sql
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 3821549804
+
+--------------------------------------------------
+| Id  | Operation	   | Name	 | Rows  |
+--------------------------------------------------
+|   0 | SELECT STATEMENT   |		 |   195K|
+|   1 |  UNION-ALL	   |		 |	 |
+|*  2 |   TABLE ACCESS FULL| BIGANNUAIRE |   184K|
+|*  3 |   TABLE ACCESS FULL| BIGANNUAIRE | 11000 |
+--------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   2 - filter("A"."AGE">=18)
+   3 - filter(TO_CHAR("A"."CP") LIKE '75%')
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - STRDEF[30], STRDEF[30], STRDEF[22], STRDEF[22], STRDEF[10],
+       STRDEF[4000]
+   2 - "A"."NOM"[VARCHAR2,30], "A"."PRENOM"[VARCHAR2,30],
+       "A"."AGE"[NUMBER,22], "A"."CP"[NUMBER,22], "A"."TEL"[VARCHAR2,10],
+       "A"."PROFIL"[VARCHAR2,4000]
+   3 - "A"."NOM"[VARCHAR2,30], "A"."PRENOM"[VARCHAR2,30],
+       "A"."AGE"[NUMBER,22], "A"."CP"[NUMBER,22], "A"."TEL"[VARCHAR2,10],
+       "A"."PROFIL"[VARCHAR2,4000]
+```
+
+Comme on peut remarquer ce plan d'exécution est le même que le plan d'exécution précédente sauf l'opération `SORT UNIQUE` qui permet de trier les valeurs et enlever les doublons.
+
+
+
+#### 2. Opérateur `INTERSECT`
+
+Cet opérateur permet de sélectionner les lignes retourné par les deux requêtes.
+
+Pour examiner cet opérateur on exécute la requête suivante:
+
+```sql
+EXPLAIN plan FOR
+SELECT *
+FROM BigAnnuaire a
+WHERE a.age >= 18
+INTERSECT
+SELECT *
+FROM BigAnnuaire a
+WHERE a.cp LIKE '75%';
+@p3
+```
+
+Cette requête permete de sélectionner les personnes majeurs habitent sur Paris.
+
+L'exécution de la requête retourne l'affichage suivant:
+
+```sql
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 4244269667
+
+---------------------------------------------------
+| Id  | Operation	    | Name	  | Rows  |
+---------------------------------------------------
+|   0 | SELECT STATEMENT    |		  | 11000 |
+|   1 |  INTERSECTION	    |		  |	  |
+|   2 |   SORT UNIQUE	    |		  |   184K|
+|*  3 |    TABLE ACCESS FULL| BIGANNUAIRE |   184K|
+|   4 |   SORT UNIQUE	    |		  | 11000 |
+|*  5 |    TABLE ACCESS FULL| BIGANNUAIRE | 11000 |
+---------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   3 - filter("A"."AGE">=18)
+   5 - filter(TO_CHAR("A"."CP") LIKE '75%')
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - STRDEF[30], STRDEF[30], STRDEF[22], STRDEF[22], STRDEF[10],
+       STRDEF[4000]
+   2 - (#keys=6) "A"."NOM"[VARCHAR2,30], "A"."PRENOM"[VARCHAR2,30],
+       "A"."AGE"[NUMBER,22], "A"."CP"[NUMBER,22], "A"."TEL"[VARCHAR2,10],
+       "A"."PROFIL"[VARCHAR2,4000]
+   3 - "A"."NOM"[VARCHAR2,30], "A"."PRENOM"[VARCHAR2,30],
+       "A"."AGE"[NUMBER,22], "A"."CP"[NUMBER,22], "A"."TEL"[VARCHAR2,10],
+       "A"."PROFIL"[VARCHAR2,4000]
+   4 - (#keys=6) "A"."NOM"[VARCHAR2,30], "A"."PRENOM"[VARCHAR2,30],
+       "A"."AGE"[NUMBER,22], "A"."CP"[NUMBER,22], "A"."TEL"[VARCHAR2,10],
+       "A"."PROFIL"[VARCHAR2,4000]
+   5 - "A"."NOM"[VARCHAR2,30], "A"."PRENOM"[VARCHAR2,30],
+       "A"."AGE"[NUMBER,22], "A"."CP"[NUMBER,22], "A"."TEL"[VARCHAR2,10],
+       "A"."PROFIL"[VARCHAR2,4000]
+```
+
+#### 3. Opérateur `MINUS`
+
+Cet opérateur a été examiné lors d'une question précédente ([voir la question f)](#question-f-requête-avec-minus--les-code-spostaux-des-villes-qui-nont-pas-de-centenaire)).
+
+### Question k) Other Built-In Operators
+
+#### 1. Opérateur `(+)`
+
+#### 2. Opérateur `PRIOR`
+
+

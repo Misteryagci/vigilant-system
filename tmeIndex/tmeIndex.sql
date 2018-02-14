@@ -436,6 +436,45 @@ EXPLAIN plan FOR
 @p3
 
 
+--h.4.7 Opérateur [NOT] BETWEEN
+
+EXPLAIN plan FOR
+SELECT *
+FROM BigAnnuaire a
+WHERE a.age
+BETWEEN 1 AND 40;
+@p3
+
+EXPLAIN plan FOR
+SELECT *
+FROM BigAnnuaire a
+WHERE a.age
+NOT BETWEEN 1 AND 40;
+@p3
+
+--h.4.9 Opérateur [NOT] LIKE
+
+EXPLAIN plan FOR
+SELECT *
+FROM BigAnnuaire a
+WHERE a.cp LIKE '75%';
+@p3
+
+--h.4.10 Opérateur IS [NOT] NULL
+
+EXPLAIN plan FOR
+SELECT *
+FROM BigAnnuaire a
+WHERE a.age IS NULL;
+@p3
+
+
+EXPLAIN plan FOR
+SELECT *
+FROM BigAnnuaire a
+WHERE a.age IS NOT NULL;
+@p3
+
 -- Exercice 6: Documentation et Requetes sur le catalogue
 -- ======================================================
 COLUMN TABLE_NAME format A20
