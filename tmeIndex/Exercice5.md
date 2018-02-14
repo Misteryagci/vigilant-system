@@ -1111,5 +1111,5 @@ On avait examiné l'exécution de cette opérateur dans une question précédent
 
 D'après la documentation d'Oracle cet opérateur compare une valeur avec chacune des valeurs de la liste en utilisant un des opérateurs de comparasion `=`, `!=`, `>`, `<`, `<=`, `>=`.
 
-Cet opérateur avait été examiné lors d'une précédente question. ([voir la question g)]#question-g-requête-avec-where-age--all-)).
+Cet opérateur avait été examiné lors d'une précédente question. ([voir la question g)](#question-g-requête-avec-where-age--all-)).
 
