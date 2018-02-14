@@ -1107,3 +1107,9 @@ Une fois que ces deux opérations sont fait, de faire une semi jointure par la d
 
 On avait examiné l'exécution de cette opérateur dans une question précédente ([voir la question d)](#question-d-requête-avec-not-in)).
 
+#### 6. Opérateur `ALL`
+
+D'après la documentation d'Oracle cet opérateur compare une valeur avec chacune des valeurs de la liste en utilisant un des opérateurs de comparasion `=`, `!=`, `>`, `<`, `<=`, `>=`.
+
+Cet opérateur avait été examiné lors d'une précédente question. ([voir la question g)]#question-g-requête-avec-where-age--all-)).
+
