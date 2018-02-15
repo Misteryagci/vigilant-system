@@ -475,12 +475,75 @@ FROM BigAnnuaire a
 WHERE a.age IS NOT NULL;
 @p3
 
+--h.5 Opérateurs SET `UNION [ALL]` `INTERSECT` `MINUS
+
+--h.5.1 Opérateur UNION [ALL]
+
+--h.5.1.1 Opérateur UNION
+
+EXPLAIN plan FOR
+SELECT *
+FROM BigAnnuaire a
+WHERE a.age >= 18
+UNION
+SELECT *
+FROM BigAnnuaire a
+WHERE a.cp LIKE '75%';
+@p3
+
+
+--h.5.1.2 Opérateur UNION ALL
+
+EXPLAIN plan FOR
+SELECT *
+FROM BigAnnuaire a
+WHERE a.age >= 18
+UNION ALL
+SELECT *
+FROM BigAnnuaire a
+WHERE a.cp LIKE '75%';
+@p3
+
+--h.5.2 Opérateur INTERSECT
+
+EXPLAIN plan FOR
+SELECT *
+FROM BigAnnuaire a
+WHERE a.age >= 18
+INTERSECT
+SELECT *
+FROM BigAnnuaire a
+WHERE a.cp LIKE '75%';
+@p3
+
+--h.6 Autres opérateurs intégrés
+
+--h.6.1 Opérateur (+)
+
+EXPLAIN plan FOR
+SELECT ba.nom, ba.prenom
+FROM BigAnnuaire ba, Annuaire a
+WHERE ba.cp =
+a.cp(+);
+@p3
+
+--h.6.2 Opérateur PRIOR
+
+EXPLAIN plan FOR
+SELECT tel, nom, prenom 
+FROM BigAnnuaire
+CONNECT BY
+PRIOR prenom = nom;
+@p3
+
+
 -- Exercice 6: Documentation et Requetes sur le catalogue
 -- ======================================================
 COLUMN TABLE_NAME format A20
 SELECT TABLE_NAME, blocks, num_rows 
 FROM user_tables;
 
+SELECT index_name, blevel, distinct_keys FROM user_indexes;
 
 -- info sur la taille des index
 column table_name format A10
@@ -495,4 +558,10 @@ select table_name, index_name, blevel, distinct_keys, leaf_blocks,
 avg_leaf_blocks_per_key, avg_data_blocks_per_key
 from all_indexes
 where table_name = 'BIGANNUAIRE';
+
+COLUMN TABLE_NAME format A20
+COLUMN column_name format A20
+SELECT TABLE_NAME, column_name, utl_raw.cast_to_number(low_value) AS borneInf,  utl_raw.cast_to_number(high_value) AS borneSup, num_distinct, histogram
+FROM user_tab_cols
+WHERE data_type = 'NUMBER';
 

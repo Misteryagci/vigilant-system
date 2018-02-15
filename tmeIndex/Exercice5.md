@@ -1332,7 +1332,7 @@ Column Projection Information (identified by operation id):
 
 Comme dans notre exemple tous les colonnes sont définis comme non null il s'agit d'un simple parcours complet de la table d'où la seule opération `TABLE ACCESS FULL`.
 
-### Question i) Requêtes avec des opérateurs de logique
+### Question h.4) Requêtes avec des opérateurs de logique
 
 Dans cette catégorie on a 3 opérateurs différents qui sont les suivants
 
@@ -1348,7 +1348,7 @@ Cet opérateur permet faire l'opération logique entre plusieurs conditions. Cec
 
 De même manière cet opérateur permet de faire une opération logique `OR` entre les conditions. Comme les autres, il n'a aucun effet spécial sur le plan d'exécution.
 
-### Question j) Opérateurs SET `UNION [ALL]` `INTERSECT` `MINUS`
+### Question h.5) Opérateurs SET `UNION [ALL]` `INTERSECT` `MINUS`
 
 #### 1. Opérateur `UNION [ALL]`
 
@@ -1539,10 +1539,138 @@ Column Projection Information (identified by operation id):
 
 Cet opérateur a été examiné lors d'une question précédente ([voir la question f)](#question-f-requête-avec-minus--les-code-spostaux-des-villes-qui-nont-pas-de-centenaire)).
 
-### Question k) Other Built-In Operators
+### Question h.6) Autres opérateurs intégrés
 
 #### 1. Opérateur `(+)`
 
+D'après la documentation d'Oracle cet opérateur indique que la colonne précédente est une colonne d'une jointure extérieure d'une join. 
+Pour pouvoir examiner le plan d'exécution de cet opérateur on exécute la requête suivante:
+
+```sql
+EXPLAIN plan FOR
+SELECT ba.nom, ba.prenom
+FROM BigAnnuaire ba, Annuaire a
+WHERE ba.cp =
+a.cp(+);
+@p3
+```
+L'exécution de cette requête nous donne l'affichage suivant:
+
+```sql
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 788481577
+
+-----------------------------------------------------
+| Id  | Operation	      | Name	    | Rows  |
+-----------------------------------------------------
+|   0 | SELECT STATEMENT      | 	    |	440K|
+|*  1 |  HASH JOIN RIGHT OUTER| 	    |	440K|
+|   2 |   INDEX FAST FULL SCAN| INDEXCP     |  2000 |
+|   3 |   TABLE ACCESS FULL   | BIGANNUAIRE |	220K|
+-----------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - access("BA"."CP"="A"."CP"(+))
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - (#keys=1) "BA"."NOM"[VARCHAR2,30], "BA"."PRENOM"[VARCHAR2,30]
+   2 - "A"."CP"[NUMBER,22]
+   3 - "BA"."NOM"[VARCHAR2,30], "BA"."PRENOM"[VARCHAR2,30],
+       "BA"."CP"[NUMBER,22]
+```
+
+Examinons en suite la même requête sans l'opérateur `(+)` c'est à dire la requête suivante:
+
+```sql
+EXPLAIN plan FOR
+SELECT ba.nom, ba.prenom
+FROM BigAnnuaire ba, Annuaire a
+WHERE ba.cp =
+a.cp;
+@p3
+```
+
+Cette deuxième requête nous donne l'affichage suivante:
+
+```sql
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 2166517327
+
+-----------------------------------------------------
+| Id  | Operation	      | Name	    | Rows  |
+-----------------------------------------------------
+|   0 | SELECT STATEMENT      | 	    |	440K|
+|*  1 |  HASH JOIN	      | 	    |	440K|
+|   2 |   INDEX FAST FULL SCAN| INDEXCP     |  2000 |
+|   3 |   TABLE ACCESS FULL   | BIGANNUAIRE |	220K|
+-----------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - access("BA"."CP"="A"."CP")
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - (#keys=1) "BA"."NOM"[VARCHAR2,30], "BA"."PRENOM"[VARCHAR2,30]
+   2 - "A"."CP"[NUMBER,22]
+   3 - "BA"."NOM"[VARCHAR2,30], "BA"."PRENOM"[VARCHAR2,30],
+       "BA"."CP"[NUMBER,22]
+```
+
+Comme on peut remarquer sur ces deux plan d'exécutions le seul chose qui change c'est l'opération numéro 1. 
+Cette opération pour la prémière exécution est `HASH JOIN RIGHT OUTER` et pour la deuxième exécution est `HASH JOIN`. On peut voir que l'opérateur `(+)` permet de forcer juste une jointure extérieure.
+
 #### 2. Opérateur `PRIOR`
+
+D'après la documentation d'Oracle cet opérator évalue l'expression suivante pour la ligne parent de la ligne actuelle hiérarchiquement. Dans une telle requête, il faut utiliser cet opérateur avec la clause `CONNECT BY` pour définir la relation entre la ligne parent et les lignes enfants. On peut aussi utiliser cet opérateur dans autres parts de la déclaration ̀`SELECT`. L'opérateur `PRIOR` est un opérateur unaire et a les mêmes priorités que les opérateurs unaires `+` et `-` qui sont des opérateurs arithmétiques.
+
+Pour pouvoir examiner cet opérateur, on exécute la requête suivante;
+
+```sql
+EXPLAIN plan FOR
+SELECT tel, nom, prenom 
+FROM BigAnnuaire
+CONNECT BY
+PRIOR prenom = nom;
+@p3
+```
+
+L'exécution de cette requête retourne l'affichage suivante:
+
+```sql
+PLAN_TABLE_OUTPUT
+----------------------------------------------------------------------------------------------------
+Plan hash value: 3139412240
+
+------------------------------------------------------------
+| Id  | Operation		     | Name	   | Rows  |
+------------------------------------------------------------
+|   0 | SELECT STATEMENT	     |		   |   220K|
+|*  1 |  CONNECT BY WITHOUT FILTERING|		   |	   |
+|   2 |   TABLE ACCESS FULL	     | BIGANNUAIRE |   220K|
+------------------------------------------------------------
+
+Predicate Information (identified by operation id):
+---------------------------------------------------
+
+   1 - access("NOM"=PRIOR "PRENOM")
+
+Column Projection Information (identified by operation id):
+-----------------------------------------------------------
+
+   1 - "NOM"[VARCHAR2,30], "TEL"[VARCHAR2,10], "PRENOM"[VARCHAR2,30],
+       PRIOR NULL[30], LEVEL[4]
+   2 - "NOM"[VARCHAR2,30], "PRENOM"[VARCHAR2,30], "TEL"[VARCHAR2,10]
+```
+
+On peut oberserver sur le plan d'exécution que l'opérateur `PRIOR` ajoute l'opération `CONNECT BY WITHOUT FILTERING` avec un prédicate d'accès `access("NOM"=PRIOR "PRENOM")`. Cette opération permet de tranfrmer la requête à une requête hiérarchique.
 
 
