@@ -67,7 +67,7 @@ puis terminer chaque requête par
 
 ## [Exercice 5 : Autres requêtes](Exercice5.md)
 
-## [Exercice 6 : Autres requêtes](Exercice6.md)
+## [Exercice 6 : Documentation](Exercice6.md)
 
 ## Questions fréquentes
 
