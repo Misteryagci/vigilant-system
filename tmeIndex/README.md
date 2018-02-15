@@ -67,6 +67,8 @@ puis terminer chaque requête par
 
 ## [Exercice 5 : Autres requêtes](Exercice5.md)
 
+## [Exercice 6 : Autres requêtes](Exercice6.md)
+
 ## Questions fréquentes
 
 - Emacs : avant d'exécuter une requête (avec <kbd>Ctrl</kbd>+<kbd>c</kbd> <kbd>Ctrl</kbd>+<kbd>c</kbd>) vérifier qu'elle est bien suivie d'une ligne **entièrement vide** ne contenant aucun espace.
