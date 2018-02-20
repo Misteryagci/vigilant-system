@@ -1,8 +1,5 @@
--- NOM: 
--- Prénom: 
-
--- NOM: 
--- Prénom: 
+-- NOM: YAGCI
+-- Prénom: Kaan
 
 -- ==========================
 --      TME Jointure
@@ -63,13 +60,75 @@ explain plan for select * from BigJoueur;
 -- Question 1
 --===========
 
+--a)
 explain plan for
-  select J.licence, C.nom
+  select /*+ ordered */ J.licence, C.nom
   from J, C
   where J.cnum = C.cnum
   and salaire >10;
 @p4
 
+explain plan for
+  select /*+ ordered */ J.licence, C.nom
+  from C, J
+  where J.cnum = C.cnum
+  and salaire >10;
+@p4
+
+--b)
+
+explain plan for
+	SELECT /*+ ordered */ *
+	FROM C, BigJoueur j
+	WHERE j.cnum = c.cnum;
+@p4
+
+explain plan for
+	SELECT /*+ ordered */ *
+	FROM  BigJoueur j, C
+	WHERE j.cnum = c.cnum;
+@p4
+
+-- c)
+
+explain plan for
+	SELECT *
+	FROM BigJoueur j
+	WHERE j.salaire > 10;
+@p4
+
+explain plan for
+	SELECT *
+	FROM BigJoueur j
+	WHERE j.salaire > 100;
+@p4
+
+explain plan for
+	SELECT *
+	FROM BigJoueur j
+	WHERE j.salaire > 1000;
+@p4
+
+explain plan for
+	SELECT *
+	FROM BigJoueur j
+	WHERE j.salaire > 10000;
+@p4
+
+-- On peut dire qu'il y a 32188 valeurs distinctes et 112 blocks de l'index salaire 
+select index_name, distinct_keys, leaf_blocks
+from user_indexes;
+
+ select min(salaire), max(salaire) from BigJoueur;
+
+--d)
+
+explain plan for
+	SELECT J.licence, C.nom
+	FROM C, j
+	WHERE J.cnum = C.cnum
+	AND salaire < 10050;
+@p4
 
 -- Question 2)
 -- ===========
