@@ -191,12 +191,19 @@ explain plan for
   and salaire < 11000;
 @p4
 
+explain plan for
+  select /*+ USE_NL(J,C) */ J.licence, C.nom
+  from C, J
+  where salaire < 11000
+  and J.cnum = C.cnum;
+@p4
+
 
 -- Question 3)
 -- ===========
 
 explain plan for
-  select /*+ USE_HASH(J,C) */ J.licence, C.division
+  select /*+ USE_HASH(C,J) */ J.licence, C.division
   from C, J
   where J.cnum = C.cnum
   and C.nom in ('PSG', 'Barca');

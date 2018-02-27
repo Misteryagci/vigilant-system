@@ -427,7 +427,7 @@ Column Projection Information (identified by operation id):
    4 - "J".ROWID[ROWID,10]
 ```
 
-D'après l'algorithme du facteur de sélectivité qu'on a défini un peu plus en haut on peut dire que la facteur de sélectivité est aux alentours de 40% et il y 6% qui vient de **ROWID** sur le coût de cet index.
+D'après l'algorithme du facteur de sélectivité qu'on a défini un peu plus en haut on peut dire que la facteur de sélectivité est aux alentours de 40% et il y 6% qui vient de **ROWID** sur le coût de cet index. 
 
 
 
