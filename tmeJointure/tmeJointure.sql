@@ -230,7 +230,7 @@ explain plan for
 
 -- ordre1 : CFJ
 explain plan for
-    select /*+ ORDERED */ C.nom, F.budget 
+    select /*+ use_nl(J,C,F)  ORDERED */ C.nom, F.budget 
     from C, F, J
     where J.cnum = C.cnum and C.cnum = F.cnum and J.cnum = F.cnum
     and C.division=1 and J.salaire > 59000
@@ -240,7 +240,7 @@ explain plan for
 
 -- ordre2 : CJF
 explain plan for
-    select /*+ ORDERED */ C.nom, F.budget 
+    select /*+ use_nl(J,C,F) ORDERED */ C.nom, F.budget 
     from C, J, F
     where J.cnum = C.cnum and C.cnum = F.cnum and J.cnum = F.cnum
     and C.division=1 and J.salaire > 59000
@@ -250,7 +250,7 @@ explain plan for
 
 -- ordre3 : FCJ
 explain plan for
-    select /*+ ORDERED */ C.nom, F.budget 
+    select /*+ use_nl(J,C,F) ORDERED */ C.nom, F.budget 
     from F, C, J
     where J.cnum = C.cnum and C.cnum = F.cnum and J.cnum = F.cnum
     and C.division=1 and J.salaire > 59000
@@ -260,7 +260,7 @@ explain plan for
 
 -- ordre4 : FJC
 explain plan for
-    select /*+ ORDERED */ C.nom, F.budget 
+    select /*+ use_nl(J,C,F) ORDERED */ C.nom, F.budget 
     from F, J, C
     where J.cnum = C.cnum and C.cnum = F.cnum and J.cnum = F.cnum
 --    where J.cnum = F.cnum and C.cnum = J.cnum
@@ -271,7 +271,7 @@ explain plan for
 
 -- ordre5 : JCF
 explain plan for
-    select /*+ ORDERED */ C.nom, F.budget 
+    select /*+  use_nl(J,C,F) ORDERED */ C.nom, F.budget 
     from J, C, F
     where J.cnum = C.cnum and C.cnum = F.cnum and J.cnum = F.cnum
     and C.division=1 and J.salaire > 59000
@@ -281,7 +281,7 @@ explain plan for
 
 -- ordre6 : JFC
 explain plan for
-    select /*+ ORDERED */ C.nom, F.budget 
+    select /*+  use_nl(J,C,F) ORDERED */ C.nom, F.budget 
     from J, F, C
     where J.cnum = C.cnum and C.cnum = F.cnum and J.cnum = F.cnum
     and C.division=1 and J.salaire > 59000
@@ -292,7 +292,7 @@ explain plan for
 
 -- SANS directive ORDERED
 explain plan for
-    select  C.nom, F.budget 
+    select  /*+  use_nl(J,C,F) */ C.nom, F.budget 
     from J, C, F
     where J.cnum = C.cnum and C.cnum = F.cnum and J.cnum = F.cnum
     and C.division=1 and J.salaire > 59000
@@ -305,7 +305,7 @@ explain plan for
 -- avec directive index(J I_J_salaire)
 
 explain plan for
-    select /*+ index(J I_J_salaire) */  C.nom, F.budget 
+    select /*+ use_nl(J,C,F) index(J I_J_salaire) */  C.nom, F.budget 
     from J, C, F
     where J.cnum = C.cnum and C.cnum = F.cnum and J.cnum = F.cnum
     and C.division=1 and J.salaire > 59000
@@ -316,7 +316,7 @@ explain plan for
 -- avec directive  index(C I_C_division)
 
 explain plan for
-    select /*+ index(C I_C_division) */  C.nom, F.budget 
+    select /*+  use_nl(J,C,F) index(C I_C_division) */  C.nom, F.budget 
     from J, C, F
     where J.cnum = C.cnum and C.cnum = F.cnum and J.cnum = F.cnum
     and C.division=1 and J.salaire > 59000
