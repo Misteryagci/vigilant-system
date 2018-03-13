@@ -1,0 +1,9 @@
+a) Dans la classe DriverManager on a trois méthodes getConnection. Les signatures de ces trois fonctions sont comme le suivant:
+    1. getConnection(String url)
+    2. getConnection(String url, Properties info)
+    3. getConnection(String url,String user, String password)
+
+b) La méthode next() de l'interface ResultSet permet d'accéder à la ligne suivante depuis la ligne actuelle. Autrement dit cette méthode permet d'itérer dans une instance ResultSet.
+c) La méthode setMaxRows(int max) de l'interface Statement permet de définir le nombre maximum des lignes dont l'objet de type ResultSet généré depuis cet object Statement.
+d) Les sous-interfaces de l'interface Statement sont les suivantes CallableStatement, PreparedStatement
+
